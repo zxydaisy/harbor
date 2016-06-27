@@ -38,7 +38,7 @@ const manifestPattern = `^application/vnd.docker.distribution.manifest.v\d\+json
 // Post handles POST request, and records audit log or refreshes cache based on event.
 func (n *NotificationHandler) Post() {
 	var notification models.Notification
-	//	log.Info("Notification Handler triggered!\n")
+	//log.Info("Notification Handler triggered!\n")
 	//	log.Infof("request body in string: %s", string(n.Ctx.Input.CopyBody()))
 	err := json.Unmarshal(n.Ctx.Input.CopyBody(1<<32), &notification)
 
@@ -46,7 +46,7 @@ func (n *NotificationHandler) Post() {
 		log.Errorf("error while decoding json: %v", err)
 		return
 	}
-	var username, action, repo, project string
+	var username, action, repo, project, repoTag string
 	var matched bool
 	for _, e := range notification.Events {
 		matched, err = regexp.MatchString(manifestPattern, e.Target.MediaType)
@@ -58,13 +58,16 @@ func (n *NotificationHandler) Post() {
 			username = e.Actor.Name
 			action = e.Action
 			repo = e.Target.Repository
+			repoTag = e.Target.Tag
+			log.Debugf("repo tag is : %v ", repoTag)
+
 			if strings.Contains(repo, "/") {
 				project = repo[0:strings.LastIndex(repo, "/")]
 			}
 			if username == "" {
 				username = "anonymous"
 			}
-			go dao.AccessLog(username, project, repo, action)
+			go dao.AccessLog(username, project, repo, repoTag, action)
 			if action == "push" {
 				go func() {
 					err2 := svc_utils.RefreshCatalogCache()

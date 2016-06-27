@@ -102,6 +102,8 @@ func clearUp(username string) {
 
 const username string = "Tester01"
 const projectName string = "test_project"
+const repoTag string = "test1.1"
+const repoTag2 string = "test1.2"
 const SysAdmin int = 1
 const projectAdmin int = 2
 const developer int = 3
@@ -128,8 +130,8 @@ func TestMain(m *testing.M) {
 
 	log.Infof("DB_HOST: %s, DB_USR: %s, DB_PORT: %s, DB_PWD: %s\n", dbHost, dbUser, dbPort, dbPassword)
 
-	os.Setenv("MYSQL_PORT_3306_TCP_ADDR", dbHost)
-	os.Setenv("MYSQL_PORT_3306_TCP_PORT", dbPort)
+	os.Setenv("MYSQL_HOST", dbHost)
+	os.Setenv("MYSQL_PORT", dbPort)
 	os.Setenv("MYSQL_USR", dbUser)
 	os.Setenv("MYSQL_PWD", dbPassword)
 	os.Setenv("AUTH_MODE", "db_auth")
@@ -206,7 +208,10 @@ func TestLoginByUserName(t *testing.T) {
 		Password: "Abc12345",
 	}
 
-	loginUser, err := LoginByDb(models.AuthModel{userQuery.Username, userQuery.Password})
+	loginUser, err := LoginByDb(models.AuthModel{
+		Principal: userQuery.Username,
+		Password:  userQuery.Password,
+	})
 	if err != nil {
 		t.Errorf("Error occurred in LoginByDb: %v", err)
 	}
@@ -226,7 +231,10 @@ func TestLoginByEmail(t *testing.T) {
 		Password: "Abc12345",
 	}
 
-	loginUser, err := LoginByDb(models.AuthModel{userQuery.Email, userQuery.Password})
+	loginUser, err := LoginByDb(models.AuthModel{
+		Principal: userQuery.Email,
+		Password:  userQuery.Password,
+	})
 	if err != nil {
 		t.Errorf("Error occurred in LoginByDb: %v", err)
 	}
@@ -345,7 +353,7 @@ func TestChangeUserPasswordWithIncorrectOldPassword(t *testing.T) {
 }
 
 func TestQueryRelevantProjectsWhenNoProjectAdded(t *testing.T) {
-	projects, err := QueryRelevantProjects(currentUser.UserID)
+	projects, err := SearchProjects(currentUser.UserID)
 	if err != nil {
 		t.Errorf("Error occurred in QueryRelevantProjects: %v", err)
 	}
@@ -366,7 +374,7 @@ func TestAddProject(t *testing.T) {
 		OwnerName:    currentUser.Username,
 	}
 
-	err := AddProject(project)
+	_, err := AddProject(project)
 	if err != nil {
 		t.Errorf("Error occurred in AddProject: %v", err)
 	}
@@ -410,6 +418,66 @@ func TestGetAccessLog(t *testing.T) {
 	}
 	if accessLogs[0].RepoName != projectName+"/" {
 		t.Errorf("The project name does not match, expected: %s, actual: %s", projectName+"/", accessLogs[0].RepoName)
+	}
+}
+
+func TestAddAccessLog(t *testing.T) {
+	var err error
+	var accessLogList []models.AccessLog
+	accessLog := models.AccessLog{
+		UserID:    currentUser.UserID,
+		ProjectID: currentProject.ProjectID,
+		RepoName:  currentProject.Name + "/",
+		RepoTag:   repoTag,
+		GUID:      "N/A",
+		Operation: "create",
+		OpTime:    time.Now(),
+	}
+	err = AddAccessLog(accessLog)
+	if err != nil {
+		t.Errorf("Error occurred in AddAccessLog: %v", err)
+	}
+	accessLogList, err = GetAccessLogs(accessLog)
+	if err != nil {
+		t.Errorf("Error occurred in GetAccessLog: %v", err)
+	}
+	if len(accessLogList) != 1 {
+		t.Errorf("The length of accesslog list should be 1, actual: %d", len(accessLogList))
+	}
+	if accessLogList[0].RepoName != projectName+"/" {
+		t.Errorf("The project name does not match, expected: %s, actual: %s", projectName+"/", accessLogList[0].RepoName)
+	}
+	if accessLogList[0].RepoTag != repoTag {
+		t.Errorf("The repo tag does not match, expected: %s, actual: %s", repoTag, accessLogList[0].RepoTag)
+	}
+}
+
+func TestAccessLog(t *testing.T) {
+	var err error
+	var accessLogList []models.AccessLog
+	accessLog := models.AccessLog{
+		UserID:    currentUser.UserID,
+		ProjectID: currentProject.ProjectID,
+		RepoName:  currentProject.Name + "/",
+		RepoTag:   repoTag2,
+		Operation: "create",
+	}
+	err = AccessLog(currentUser.Username, currentProject.Name, currentProject.Name+"/", repoTag2, "create")
+	if err != nil {
+		t.Errorf("Error occurred in AccessLog: %v", err)
+	}
+	accessLogList, err = GetAccessLogs(accessLog)
+	if err != nil {
+		t.Errorf("Error occurred in GetAccessLog: %v", err)
+	}
+	if len(accessLogList) != 1 {
+		t.Errorf("The length of accesslog list should be 1, actual: %d", len(accessLogList))
+	}
+	if accessLogList[0].RepoName != projectName+"/" {
+		t.Errorf("The project name does not match, expected: %s, actual: %s", projectName+"/", accessLogList[0].RepoName)
+	}
+	if accessLogList[0].RepoTag != repoTag2 {
+		t.Errorf("The repo tag does not match, expected: %s, actual: %s", repoTag2, accessLogList[0].RepoTag)
 	}
 }
 
@@ -504,39 +572,6 @@ func TestIsProjectPublic(t *testing.T) {
 	}
 }
 
-func TestQueryProject(t *testing.T) {
-	query1 := models.Project{
-		UserID: 1,
-	}
-	projects, err := QueryProject(query1)
-	if err != nil {
-		t.Errorf("Error in Query Project: %v, query: %+v", err, query1)
-	}
-	if len(projects) != 2 {
-		t.Errorf("Expecting get 2 projects, but actual: %d, the list: %+v", len(projects), projects)
-	}
-	query2 := models.Project{
-		Public: 1,
-	}
-	projects, err = QueryProject(query2)
-	if err != nil {
-		t.Errorf("Error in Query Project: %v, query: %+v", err, query2)
-	}
-	if len(projects) != 1 {
-		t.Errorf("Expecting get 1 project, but actual: %d, the list: %+v", len(projects), projects)
-	}
-	query3 := models.Project{
-		UserID: 9,
-	}
-	projects, err = QueryProject(query3)
-	if err != nil {
-		t.Errorf("Error in Query Project: %v, query: %+v", err, query3)
-	}
-	if len(projects) != 0 {
-		t.Errorf("Expecting get 0 project, but actual: %d, the list: %+v", len(projects), projects)
-	}
-}
-
 func TestGetUserProjectRoles(t *testing.T) {
 	r, err := GetUserProjectRoles(currentUser.UserID, currentProject.ProjectID)
 	if err != nil {
@@ -563,16 +598,42 @@ func TestProjectPermission(t *testing.T) {
 	}
 }
 
-func TestQueryRelevantProjects(t *testing.T) {
-	projects, err := QueryRelevantProjects(currentUser.UserID)
+func TestGetUserRelevantProjects(t *testing.T) {
+	projects, err := GetUserRelevantProjects(currentUser.UserID, "")
 	if err != nil {
-		t.Errorf("Error occurred in QueryRelevantProjects: %v", err)
+		t.Errorf("Error occurred in GetUserRelevantProjects: %v", err)
+	}
+	if len(projects) != 1 {
+		t.Errorf("Expected length of relevant projects is 1, but actual: %d, the projects: %+v", len(projects), projects)
+	}
+	if projects[0].Name != projectName {
+		t.Errorf("Expected project name in the list: %s, actual: %s", projectName, projects[1].Name)
+	}
+}
+
+func TestGetAllProjects(t *testing.T) {
+	projects, err := GetAllProjects("")
+	if err != nil {
+		t.Errorf("Error occurred in GetAllProjects: %v", err)
 	}
 	if len(projects) != 2 {
-		t.Errorf("Expected length of relevant projects is 2, but actual: %d, the projects: %+v", len(projects), projects)
+		t.Errorf("Expected length of projects is 2, but actual: %d, the projects: %+v", len(projects), projects)
 	}
 	if projects[1].Name != projectName {
 		t.Errorf("Expected project name in the list: %s, actual: %s", projectName, projects[1].Name)
+	}
+}
+
+func TestGetPublicProjects(t *testing.T) {
+	projects, err := GetPublicProjects("")
+	if err != nil {
+		t.Errorf("Error occurred in getProjects: %v", err)
+	}
+	if len(projects) != 1 {
+		t.Errorf("Expected length of projects is 1, but actual: %d, the projects: %+v", len(projects), projects)
+	}
+	if projects[0].Name != "library" {
+		t.Errorf("Expected project name in the list: %s, actual: %s", "library", projects[0].Name)
 	}
 }
 
@@ -652,5 +713,12 @@ func TestDeleteUser(t *testing.T) {
 	}
 	if user != nil {
 		t.Errorf("user is not nil after deletion, user: %+v", user)
+	}
+}
+
+func TestGetOrmer(t *testing.T) {
+	o := GetOrmer()
+	if o == nil {
+		t.Errorf("Error get ormer.")
 	}
 }

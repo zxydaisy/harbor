@@ -57,7 +57,10 @@ func (b *BaseAPI) ValidateUser() int {
 	username, password, ok := b.Ctx.Request.BasicAuth()
 	if ok {
 		log.Infof("Requst with Basic Authentication header, username: %s", username)
-		user, err := auth.Login(models.AuthModel{username, password})
+		user, err := auth.Login(models.AuthModel{
+			Principal: username,
+			Password:  password,
+		})
 		if err != nil {
 			log.Errorf("Error while trying to login, username: %s, error: %v", username, err)
 			user = nil
@@ -82,4 +85,12 @@ func (b *BaseAPI) ValidateUser() int {
 		b.CustomAbort(http.StatusUnauthorized, "")
 	}
 	return userID
+}
+
+// Redirect does redirection to resource URI with http header status code.
+func (b *BaseAPI) Redirect(statusCode int, resouceID string) {
+	requestURI := b.Ctx.Request.RequestURI
+	resoucreURI := requestURI + "/" + resouceID
+
+	b.Ctx.Redirect(statusCode, resoucreURI)
 }

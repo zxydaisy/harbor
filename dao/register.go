@@ -22,8 +22,6 @@ import (
 
 	"github.com/vmware/harbor/models"
 	"github.com/vmware/harbor/utils"
-
-	"github.com/astaxie/beego/orm"
 )
 
 // Register is used for user to register, the password is encrypted before the record is inserted into database.
@@ -34,7 +32,7 @@ func Register(user models.User) (int64, error) {
 		return 0, err
 	}
 
-	o := orm.NewOrm()
+	o := GetOrmer()
 
 	p, err := o.Raw("insert into user (username, password, realname, email, comment, salt, sysadmin_flag, creation_time, update_time) values (?, ?, ?, ?, ?, ?, ?, ?, ?)").Prepare()
 	if err != nil {
@@ -74,16 +72,13 @@ func validate(user models.User) error {
 		return errors.New("Username already exists.")
 	}
 
-	if m, _ := regexp.MatchString(`^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$`, user.Email); !m {
-		return errors.New("Email with illegal format.")
-	}
-
-	if isIllegalLength(user.Email, 0, -1) {
-		return errors.New("Email cannot empty.")
-	}
-
-	if exist, _ := UserExists(models.User{Email: user.Email}, "email"); exist {
-		return errors.New("Email already exists.")
+	if len(user.Email) > 0 {
+		if m, _ := regexp.MatchString(`^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$`, user.Email); !m {
+			return errors.New("Email with illegal format.")
+		}
+		if exist, _ := UserExists(models.User{Email: user.Email}, "email"); exist {
+			return errors.New("Email already exists.")
+		}
 	}
 
 	if isIllegalLength(user.Realname, 0, 20) {
@@ -111,7 +106,7 @@ func UserExists(user models.User, target string) (bool, error) {
 		return false, errors.New("User name and email are blank.")
 	}
 
-	o := orm.NewOrm()
+	o := GetOrmer()
 
 	sql := `select user_id from user where 1=1 `
 	queryParam := make([]interface{}, 1)

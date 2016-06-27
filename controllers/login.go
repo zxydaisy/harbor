@@ -49,7 +49,10 @@ func (c *CommonController) Login() {
 	principal := c.GetString("principal")
 	password := c.GetString("password")
 
-	user, err := auth.Login(models.AuthModel{principal, password})
+	user, err := auth.Login(models.AuthModel{
+		Principal: principal,
+		Password:  password,
+	})
 	if err != nil {
 		log.Errorf("Error occurred in UserLogin: %v", err)
 		c.CustomAbort(http.StatusUnauthorized, "")
@@ -66,7 +69,7 @@ func (c *CommonController) Login() {
 // SwitchLanguage handles UI request to switch between different languages and re-render template based on language.
 func (c *CommonController) SwitchLanguage() {
 	lang := c.GetString("lang")
-	if lang == "en-US" || lang == "zh-CN" {
+	if lang == "en-US" || lang == "zh-CN" || lang == "de-DE" || lang == "ru-RU" || lang == "ja-JP" {
 		c.SetSession("lang", lang)
 		c.Data["Lang"] = lang
 	}

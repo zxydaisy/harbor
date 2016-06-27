@@ -22,6 +22,7 @@ import (
 
 	"os"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/astaxie/beego/orm"
@@ -66,30 +67,23 @@ func GenerateRandomString() (string, error) {
 func InitDB() {
 	orm.RegisterDriver("mysql", orm.DRMySQL)
 	addr := os.Getenv("MYSQL_HOST")
-	if len(addr) == 0 {
-		addr = os.Getenv("MYSQL_PORT_3306_TCP_ADDR")
-	}
-
-	port := os.Getenv("MYSQL_PORT_3306_TCP_PORT")
+	port := os.Getenv("MYSQL_PORT")
 	username := os.Getenv("MYSQL_USR")
+	password := os.Getenv("MYSQL_PWD")
 
-	password := os.Getenv("MYSQL_ENV_MYSQL_ROOT_PASSWORD")
-	if len(password) == 0 {
-		password = os.Getenv("MYSQL_PWD")
-	}
-
+	log.Debugf("db url: %s:%s, db user: %s", addr, port, username)
 	dbStr := username + ":" + password + "@tcp(" + addr + ":" + port + ")/registry"
 	ch := make(chan int, 1)
 	go func() {
 		var err error
 		var c net.Conn
 		for {
-			c, err = net.Dial("tcp", addr+":"+port)
+			c, err = net.DialTimeout("tcp", addr+":"+port, 20*time.Second)
 			if err == nil {
 				c.Close()
 				ch <- 1
 			} else {
-				log.Info("failed to connect to db, retry after 2 seconds...")
+				log.Errorf("failed to connect to db, retry after 2 seconds :%v", err)
 				time.Sleep(2 * time.Second)
 			}
 		}
@@ -103,4 +97,15 @@ func InitDB() {
 	if err != nil {
 		panic(err)
 	}
+}
+
+var globalOrm orm.Ormer
+var once sync.Once
+
+// GetOrmer :set ormer singleton
+func GetOrmer() orm.Ormer {
+	once.Do(func() {
+		globalOrm = orm.NewOrm()
+	})
+	return globalOrm
 }

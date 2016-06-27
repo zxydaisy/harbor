@@ -13,17 +13,18 @@
    limitations under the License.
 */
 
-package routers
+package main
 
 import (
 	"github.com/vmware/harbor/api"
 	"github.com/vmware/harbor/controllers"
 	"github.com/vmware/harbor/service"
+	"github.com/vmware/harbor/service/token"
 
 	"github.com/astaxie/beego"
 )
 
-func init() {
+func initRouters() {
 
 	beego.SetStaticPath("registry/static/i18n", "static/i18n")
 	beego.SetStaticPath("registry/static/resources", "static/resources")
@@ -32,15 +33,14 @@ func init() {
 	beego.Router("/login", &controllers.CommonController{}, "post:Login")
 	beego.Router("/logout", &controllers.CommonController{}, "get:Logout")
 	beego.Router("/language", &controllers.CommonController{}, "get:SwitchLanguage")
-	beego.Router("/signUp", &controllers.CommonController{}, "post:SignUp")
 	beego.Router("/userExists", &controllers.CommonController{}, "post:UserExists")
 	beego.Router("/reset", &controllers.CommonController{}, "post:ResetPassword")
 	beego.Router("/sendEmail", &controllers.CommonController{}, "get:SendEmail")
-	beego.Router("/updatePassword", &controllers.CommonController{}, "post:UpdatePassword")
 
 	beego.Router("/", &controllers.IndexController{})
 	beego.Router("/signIn", &controllers.SignInController{})
 	beego.Router("/register", &controllers.RegisterController{})
+	beego.Router("/addUser", &controllers.AddUserController{})
 	beego.Router("/forgotPassword", &controllers.ForgotPasswordController{})
 	beego.Router("/resetPassword", &controllers.ResetPasswordController{})
 	beego.Router("/changePassword", &controllers.ChangePasswordController{})
@@ -53,14 +53,18 @@ func init() {
 	//API:
 	beego.Router("/api/search", &api.SearchAPI{})
 	beego.Router("/api/projects/:pid/members/?:mid", &api.ProjectMemberAPI{})
+	beego.Router("/api/projects/", &api.ProjectAPI{}, "get:List")
 	beego.Router("/api/projects/?:id", &api.ProjectAPI{})
+	beego.Router("/api/statistics", &api.StatisticAPI{})
 	beego.Router("/api/projects/:id/logs/filter", &api.ProjectAPI{}, "post:FilterAccessLog")
+	beego.Router("/api/users", &api.UserAPI{})
 	beego.Router("/api/users/?:id", &api.UserAPI{})
+	beego.Router("/api/users/:id/password", &api.UserAPI{}, "put:ChangePassword")
 	beego.Router("/api/repositories", &api.RepositoryAPI{})
 	beego.Router("/api/repositories/tags", &api.RepositoryAPI{}, "get:GetTags")
 	beego.Router("/api/repositories/manifests", &api.RepositoryAPI{}, "get:GetManifests")
 
 	//external service that hosted on harbor process:
 	beego.Router("/service/notifications", &service.NotificationHandler{})
-	beego.Router("/service/token", &service.TokenHandler{})
+	beego.Router("/service/token", &token.Handler{})
 }

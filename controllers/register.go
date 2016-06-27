@@ -17,11 +17,10 @@ package controllers
 
 import (
 	"net/http"
-	"os"
-	"strings"
 
 	"github.com/vmware/harbor/dao"
 	"github.com/vmware/harbor/models"
+
 	"github.com/vmware/harbor/utils/log"
 )
 
@@ -32,35 +31,43 @@ type RegisterController struct {
 
 // Get renders the Sign In page, it only works if the auth mode is set to db_auth
 func (rc *RegisterController) Get() {
-	authMode := os.Getenv("AUTH_MODE")
-	if authMode == "" || authMode == "db_auth" {
+
+	if !rc.SelfRegistration {
+		log.Warning("Registration is disabled when self-registration is off.")
+		rc.Redirect("/signIn", http.StatusFound)
+	}
+
+	if rc.AuthMode == "db_auth" {
 		rc.ForwardTo("page_title_registration", "register")
 	} else {
-		rc.Redirect("/signIn", http.StatusNotFound)
+		rc.Redirect("/signIn", http.StatusFound)
 	}
 }
 
-// SignUp insert data into DB based on data in form.
-func (rc *CommonController) SignUp() {
-	username := strings.TrimSpace(rc.GetString("username"))
-	email := strings.TrimSpace(rc.GetString("email"))
-	realname := strings.TrimSpace(rc.GetString("realname"))
-	password := strings.TrimSpace(rc.GetString("password"))
-	comment := strings.TrimSpace(rc.GetString("comment"))
+// AddUserController handles request for adding user with an admin role user
+type AddUserController struct {
+	BaseController
+}
 
-	user := models.User{Username: username, Email: email, Realname: realname, Password: password, Comment: comment}
+// Get renders the Sign In page, it only works if the auth mode is set to db_auth
+func (ac *AddUserController) Get() {
 
-	_, err := dao.Register(user)
-	if err != nil {
-		log.Errorf("Error occurred in Register: %v", err)
-		rc.CustomAbort(http.StatusInternalServerError, "Internal error.")
+	if !ac.IsAdmin {
+		log.Warning("Add user can only be used by admin role user.")
+		ac.Redirect("/signIn", http.StatusFound)
+	}
+
+	if ac.AuthMode == "db_auth" {
+		ac.ForwardTo("page_title_add_user", "register")
+	} else {
+		ac.Redirect("/signIn", http.StatusFound)
 	}
 }
 
 // UserExists checks if user exists when user input value in sign in form.
-func (rc *CommonController) UserExists() {
-	target := rc.GetString("target")
-	value := rc.GetString("value")
+func (cc *CommonController) UserExists() {
+	target := cc.GetString("target")
+	value := cc.GetString("value")
 
 	user := models.User{}
 	switch target {
@@ -73,8 +80,8 @@ func (rc *CommonController) UserExists() {
 	exist, err := dao.UserExists(user, target)
 	if err != nil {
 		log.Errorf("Error occurred in UserExists: %v", err)
-		rc.CustomAbort(http.StatusInternalServerError, "Internal error.")
+		cc.CustomAbort(http.StatusInternalServerError, "Internal error.")
 	}
-	rc.Data["json"] = exist
-	rc.ServeJSON()
+	cc.Data["json"] = exist
+	cc.ServeJSON()
 }

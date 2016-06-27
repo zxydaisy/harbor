@@ -33,7 +33,7 @@ type ProjectMemberAPI struct {
 }
 
 type memberReq struct {
-	Username string `json:"user_name"`
+	Username string `json:"username"`
 	UserID   int    `json:"user_id"`
 	Roles    []int  `json:"roles"`
 }
@@ -92,7 +92,7 @@ func (pma *ProjectMemberAPI) Get() {
 		}
 		pma.Data["json"] = userList
 	} else { //return detail of a  member
-		roleList, err := dao.GetUserProjectRoles(pma.memberID, pid)
+		roleList, err := listRoles(pma.memberID, pid)
 		if err != nil {
 			log.Errorf("Error occurred in GetUserProjectRoles, error: %v", err)
 			pma.CustomAbort(http.StatusInternalServerError, "Internal error.")
@@ -104,7 +104,7 @@ func (pma *ProjectMemberAPI) Get() {
 			log.Errorf("Error occurred in GetUser, error: %v", err)
 			pma.CustomAbort(http.StatusInternalServerError, "Internal error.")
 		}
-		result["user_name"] = user.Username
+		result["username"] = user.Username
 		result["user_id"] = pma.memberID
 		result["roles"] = roleList
 		pma.Data["json"] = result
@@ -114,23 +114,10 @@ func (pma *ProjectMemberAPI) Get() {
 
 // Post ...
 func (pma *ProjectMemberAPI) Post() {
-	pid := pma.project.ProjectID
-
-	//userQuery := models.User{UserID: pma.currentUserID, RoleID: models.PROJECTADMIN}
-	rolelist, err := dao.GetUserProjectRoles(pma.currentUserID, pid)
-	if err != nil {
-		log.Errorf("Error occurred in GetUserProjectRoles, error: %v", err)
-		pma.CustomAbort(http.StatusInternalServerError, "Internal error.")
-	}
-	hasProjectAdminRole := false
-	for _, role := range rolelist {
-		if role.RoleID == models.PROJECTADMIN {
-			hasProjectAdminRole = true
-			break
-		}
-	}
-	if !hasProjectAdminRole {
-		log.Warningf("Current user, id: %d does not have project admin role for project, id:", pma.currentUserID, pid)
+	currentUserID := pma.currentUserID
+	projectID := pma.project.ProjectID
+	if !hasProjectAdminRole(currentUserID, projectID) {
+		log.Warningf("Current user, id: %d does not have project admin role for project, id:", currentUserID, projectID)
 		pma.RenderError(http.StatusForbidden, "")
 		return
 	}
@@ -144,21 +131,21 @@ func (pma *ProjectMemberAPI) Post() {
 		pma.RenderError(http.StatusNotFound, "User does not exist")
 		return
 	}
-	rolelist, err = dao.GetUserProjectRoles(userID, pid)
+	rolelist, err := dao.GetUserProjectRoles(userID, projectID)
 	if err != nil {
 		log.Errorf("Error occurred in GetUserProjectRoles, error: %v", err)
 		pma.CustomAbort(http.StatusInternalServerError, "Internal error.")
 	}
 	if len(rolelist) > 0 {
-		log.Warningf("user is already added to project, user id: %d, project id: %d", userID, pid)
+		log.Warningf("user is already added to project, user id: %d, project id: %d", userID, projectID)
 		pma.RenderError(http.StatusConflict, "user is ready in project")
 		return
 	}
 
 	for _, rid := range req.Roles {
-		err = dao.AddProjectMember(pid, userID, int(rid))
+		err = dao.AddProjectMember(projectID, userID, int(rid))
 		if err != nil {
-			log.Errorf("Failed to update DB to add project user role, project id: %d, user id: %d, role id: %d", pid, userID, rid)
+			log.Errorf("Failed to update DB to add project user role, project id: %d, user id: %d, role id: %d", projectID, userID, rid)
 			pma.RenderError(http.StatusInternalServerError, "Failed to update data in database")
 			return
 		}
@@ -167,27 +154,16 @@ func (pma *ProjectMemberAPI) Post() {
 
 // Put ...
 func (pma *ProjectMemberAPI) Put() {
+	currentUserID := pma.currentUserID
 	pid := pma.project.ProjectID
-	mid := pma.memberID
-
-	rolelist, err := dao.GetUserProjectRoles(pma.currentUserID, pid)
-	if err != nil {
-		log.Errorf("Error occurred in GetUserProjectRoles, error: %v", err)
-		pma.CustomAbort(http.StatusInternalServerError, "Internal error.")
-	}
-	hasProjectAdminRole := false
-	for _, role := range rolelist {
-		if role.RoleID == models.PROJECTADMIN {
-			hasProjectAdminRole = true
-			break
-		}
-	}
-
-	if !hasProjectAdminRole {
-		log.Warningf("Current user, id: %d does not have project admin role for project, id: %d", pma.currentUserID, pid)
+	if !hasProjectAdminRole(currentUserID, pid) {
+		log.Warningf("Current user, id: %d does not have project admin role for project, id:", currentUserID, pid)
 		pma.RenderError(http.StatusForbidden, "")
 		return
 	}
+
+	mid := pma.memberID
+
 	var req memberReq
 	pma.DecodeJSONReq(&req)
 	roleList, err := dao.GetUserProjectRoles(mid, pid)
@@ -217,24 +193,17 @@ func (pma *ProjectMemberAPI) Put() {
 
 // Delete ...
 func (pma *ProjectMemberAPI) Delete() {
+	currentUserID := pma.currentUserID
 	pid := pma.project.ProjectID
-	mid := pma.memberID
-
-	rolelist, err := dao.GetUserProjectRoles(pma.currentUserID, pid)
-	hasProjectAdminRole := false
-	for _, role := range rolelist {
-		if role.RoleID == models.PROJECTADMIN {
-			hasProjectAdminRole = true
-			break
-		}
-	}
-
-	if !hasProjectAdminRole {
-		log.Warningf("Current user, id: %d does not have project admin role for project, id: %d", pma.currentUserID, pid)
+	if !hasProjectAdminRole(currentUserID, pid) {
+		log.Warningf("Current user, id: %d does not have project admin role for project, id:", currentUserID, pid)
 		pma.RenderError(http.StatusForbidden, "")
 		return
 	}
-	err = dao.DeleteProjectMember(pid, mid)
+
+	mid := pma.memberID
+
+	err := dao.DeleteProjectMember(pid, mid)
 	if err != nil {
 		log.Errorf("Failed to delete project roles for user, user id: %d, project id: %d, error: %v", mid, pid, err)
 		pma.RenderError(http.StatusInternalServerError, "Failed to update data in DB")

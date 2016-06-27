@@ -39,7 +39,7 @@ insert into role (role_code, name) values
 create table user (
  user_id int NOT NULL AUTO_INCREMENT,
  username varchar(15),
- email varchar(30),
+ email varchar(128),
  password varchar(40) NOT NULL,
  realname varchar (20) NOT NULL,
  comment varchar (30),
@@ -94,6 +94,7 @@ create table access_log (
  user_id int NOT NULL,
  project_id int NOT NULL,
  repo_name varchar (40), 
+ repo_tag varchar (20),
  GUID varchar(64), 
  operation varchar(20) NOT NULL,
  op_time timestamp,
@@ -101,3 +102,18 @@ create table access_log (
  FOREIGN KEY (user_id) REFERENCES user(user_id),
  FOREIGN KEY (project_id) REFERENCES project (project_id)
 );
+
+create table properties (
+ k varchar(64) NOT NULL,
+ v varchar(128) NOT NULL,
+ primary key (k)
+ );
+
+insert into properties (k, v) values 
+('schema_version', '0.1.1');
+
+CREATE TABLE IF NOT EXISTS `alembic_version` (
+    `version_num` varchar(32) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+insert into alembic_version values ('0.1.1');

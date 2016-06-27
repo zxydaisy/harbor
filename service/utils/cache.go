@@ -16,17 +16,23 @@
 package utils
 
 import (
-	"encoding/json"
+	"os"
 	"time"
 
-	"github.com/vmware/harbor/models"
 	"github.com/vmware/harbor/utils/log"
+	"github.com/vmware/harbor/utils/registry"
 
 	"github.com/astaxie/beego/cache"
 )
 
-// Cache is the global cache in system.
-var Cache cache.Cache
+var (
+	// Cache is the global cache in system.
+	Cache             cache.Cache
+	endpoint          string
+	username          string
+	registryClient    *registry.Registry
+	repositoryClients map[string]*registry.Repository
+)
 
 const catalogKey string = "catalog"
 
@@ -36,20 +42,56 @@ func init() {
 	if err != nil {
 		log.Errorf("Failed to initialize cache, error:%v", err)
 	}
+
+	endpoint = os.Getenv("REGISTRY_URL")
+	username = "admin"
+	repositoryClients = make(map[string]*registry.Repository, 10)
 }
 
 // RefreshCatalogCache calls registry's API to get repository list and write it to cache.
 func RefreshCatalogCache() error {
-	result, err := RegistryAPIGet(BuildRegistryURL("_catalog"), "")
+	log.Debug("refreshing catalog cache...")
+
+	if registryClient == nil {
+		var err error
+		registryClient, err = registry.NewRegistryWithUsername(endpoint, username)
+		if err != nil {
+			log.Errorf("error occurred while initializing registry client used by cache: %v", err)
+			return err
+		}
+	}
+
+	var err error
+	rs, err := registryClient.Catalog()
 	if err != nil {
 		return err
 	}
-	repoResp := models.Repo{}
-	err = json.Unmarshal(result, &repoResp)
-	if err != nil {
-		return err
+
+	repos := []string{}
+
+	for _, repo := range rs {
+		rc, ok := repositoryClients[repo]
+		if !ok {
+			rc, err = registry.NewRepositoryWithUsername(repo, endpoint, username)
+			if err != nil {
+				log.Errorf("error occurred while initializing repository client used by cache: %s %v", repo, err)
+				continue
+			}
+			repositoryClients[repo] = rc
+		}
+		tags, err := rc.ListTag()
+		if err != nil {
+			log.Errorf("error occurred while list tag for %s: %v", repo, err)
+			continue
+		}
+
+		if len(tags) != 0 {
+			repos = append(repos, repo)
+			log.Debugf("add %s to catalog cache", repo)
+		}
 	}
-	Cache.Put(catalogKey, repoResp.Repositories, 600*time.Second)
+
+	Cache.Put(catalogKey, repos, 600*time.Second)
 	return nil
 }
 

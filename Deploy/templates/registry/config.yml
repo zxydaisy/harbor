@@ -11,6 +11,8 @@ storage:
     maintenance:
         uploadpurging:
             enabled: false
+    delete:
+        enabled: true
 http:
     addr: :5000
     secret: placeholder
@@ -27,7 +29,7 @@ notifications:
   endpoints:
       - name: harbor
         disabled: false
-        url: $ui_url/service/notifications
-        timeout: 500
+        url: http://ui/service/notifications
+        timeout: 500ms
         threshold: 5
-        backoff: 1000
+        backoff: 1s

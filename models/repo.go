@@ -29,7 +29,6 @@ type RepoItem struct {
 	ID            string    `json:"Id"`
 	Parent        string    `json:"Parent"`
 	Created       time.Time `json:"Created"`
-	CreatedStr    string    `json:"CreatedStr"`
 	DurationDays  string    `json:"Duration Days"`
 	Author        string    `json:"Author"`
 	Architecture  string    `json:"Architecture"`
@@ -42,4 +41,22 @@ type RepoItem struct {
 type Tag struct {
 	Version string `json:"version"`
 	ImageID string `json:"image_id"`
+}
+
+// Manifest ...
+type Manifest struct {
+	SchemaVersion int           `json:"schemaVersion"`
+	Name          string        `json:"name"`
+	Tag           string        `json:"tag"`
+	Architecture  string        `json:"architecture"`
+	FsLayers      []blobSumItem `json:"fsLayers"`
+	History       []histroyItem `json:"history"`
+}
+
+type histroyItem struct {
+	V1Compatibility string `json:"v1Compatibility"`
+}
+
+type blobSumItem struct {
+	BlobSum string `json:"blobSum"`
 }
