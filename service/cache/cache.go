@@ -29,7 +29,6 @@ import (
 var (
 	// Cache is the global cache in system.
 	Cache             cache.Cache
-	MetaCache	  cache.Cache
 	endpoint          string
 	username          string
 	registryClient    *registry.Registry
