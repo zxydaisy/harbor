@@ -7,3 +7,4 @@ Deploy/config/jobservice/env
 ui/ui
 *.pyc
 jobservice/test
+.idea/

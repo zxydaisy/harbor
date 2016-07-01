@@ -158,3 +158,10 @@ CREATE TABLE IF NOT EXISTS `alembic_version` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 insert into alembic_version values ('0.3.0');
+
+-- create a table for setting labels for repo.
+create table repo_label (
+  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  repoName varchar(30) NOT NULL,
+  label varchar(30) NOT NULL
+)
