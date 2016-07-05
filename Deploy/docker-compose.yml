@@ -3,13 +3,13 @@ services:
   log:
     build: ./log/
     volumes:
-      - /var/log/harbor/:/var/log/docker/
+      - ./harbor/log/harbor/:/var/log/docker/
     ports:
       - 1514:514
   registry:
     image: library/registry:2.4.0
     volumes:
-      - /data/registry:/storage
+      - ./harbor/data/registry:/storage
       - ./config/registry/:/etc/registry/
     environment:
       - GODEBUG=netdns=cgo
@@ -27,9 +27,11 @@ services:
   mysql:
     build: ./db/
     volumes:
-      - /data/database:/var/lib/mysql
+      - ./harbor/data/mysql:/var/lib/mysql
     env_file:
       - ./config/db/env
+    ports:
+      - 3306:3306
     depends_on:
       - log
     logging:
@@ -40,7 +42,7 @@ services:
   ui:
     build:
       context: ../
-      dockerfile: Dockerfile.ui
+      dockerfile: Dockerfile
     env_file:
       - ./config/ui/env
     volumes:
@@ -54,7 +56,7 @@ services:
         syslog-address: "tcp://127.0.0.1:1514"
         syslog-tag: "ui"
   proxy:
-    image: library/nginx:1.9
+    image: library/nginx:1.9.0
     volumes:
       - ./config/nginx:/etc/nginx
     ports:
