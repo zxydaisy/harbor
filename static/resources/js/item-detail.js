@@ -44,14 +44,27 @@ jQuery(function(){
 				$("#tabItemDetail li:eq(2)").hide();
 			}
 
-			listRepo($("#repoName").val());
+			listRepoByIndex($("#repoName").val(), 0, function(data){
+				data.pages && $('#accordionRepoPaginator').jqPaginator({
+							totalPages: data.pages,
+							visiblePages: 5,
+							currentPage: 1,
+							onPageChange: function (num, type) {
+									listRepoByIndex($("#repoName").val(), (num-1), function(data){
+										data.pages && $('#accordionRepoPaginator').jqPaginator('option', {
+										    totalPages: data.pages
+										});
+									})
+							}
+					});
+			});
 
-			function listRepo(repoName){
+			function listRepoByIndex(repoName, index, callback){
 
 				$("#divErrMsg").hide();
 
 				new AjaxUtil({
-					url: "/api/repositories?project_id=" + $("#projectId").val() + "&q=" + repoName,
+					url: "/api/repositories?project_id=" + $("#projectId").val() + "&q=" + repoName + '&pageId=' + index,
 					type: "get",
 					success: function(data, status, xhr){
 						console.log(data);
@@ -62,7 +75,7 @@ jQuery(function(){
 								$("#divErrMsg center").html(i18n.getMessage("no_repo_exists"));
 								return;
 							}
-							$.each(data, function(i, e){
+							data.repoList && $.each(data.repoList, function(i, e){
 								var targetId = e.replace(/\//g, "------").replace(/\./g, "---");
 								var row = '<div class="panel panel-default"  targetId="' + targetId + '">' +
 								'<div class="panel-heading" role="tab" id="heading' + i + '"+ >' +
@@ -97,6 +110,10 @@ jQuery(function(){
 							if(repoName != ""){
 								$("#txtRepoName").val(repoName);
 								$("#accordionRepo #heading0 a").trigger("click");
+							}
+
+							if (callback) {
+								callback(data);
 							}
 						}
 					}
