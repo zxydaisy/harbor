@@ -110,7 +110,7 @@ func GetRepoFromCache() ([]string, error) {
 	return result.([]string), nil
 }
 
-<<<<<<< HEAD:service/cache/cache.go
+
 // NewRegistryClient ...
 func NewRegistryClient(endpoint string, insecure bool, username, scopeType, scopeName string,
 	scopeActions ...string) (*registry.Registry, error) {
@@ -145,6 +145,3 @@ func NewRepositoryClient(endpoint string, insecure bool, username, repository, s
 	}
 	return client, nil
 }
-=======
-
->>>>>>> add metadata:service/utils/cache.go

@@ -24,7 +24,7 @@
   function ListRepositoryController($scope, ListRepositoryService, DeleteRepositoryService, $filter, trFilter, $location, getParameterByName) {
     
     $scope.subsTabPane = 30;
-    
+
     var vm = this;
   
     vm.sectionHeight = {'min-height': '579px'};
@@ -88,8 +88,9 @@
     }
    
     function getRepositoryComplete(data, status) {
-      vm.repositories = data || [];
+      vm.repositories = data.repoList || [];
       $scope.$broadcast('refreshTags', true);
+      $scope.$broadcast('refreshLabels',true)
     }
     
     function getRepositoryFailed(response) {
