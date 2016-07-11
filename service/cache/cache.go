@@ -111,6 +111,7 @@ func GetRepoFromCache() ([]string, error) {
 }
 
 
+
 // NewRegistryClient ...
 func NewRegistryClient(endpoint string, insecure bool, username, scopeType, scopeName string,
 	scopeActions ...string) (*registry.Registry, error) {
@@ -145,3 +146,4 @@ func NewRepositoryClient(endpoint string, insecure bool, username, repository, s
 	}
 	return client, nil
 }
+

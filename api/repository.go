@@ -162,6 +162,7 @@ func (ra *RepositoryAPI) AddLabel() {
 	ra.ServeJSON()
 }
 
+
 func (ra *RepositoryAPI) DeleteLabel() {
 	repoName := ra.GetString("repo_name")
 	if len(repoName) == 0 {
@@ -183,6 +184,7 @@ func (ra *RepositoryAPI) DeleteLabel() {
 	}
 	ra.ServeJSON()
 }
+
 
 func (ra *RepositoryAPI) GetLabels() {
 	repoName := ra.GetString("repo_name")
