@@ -59,6 +59,9 @@
 							<div class="alert alert-danger" role="alert" id="divErrMsg"><center></center></div>
 							<div class="panel-group" id="accordionRepo" role="tablist" aria-multiselectable="true">
 							</div>
+							<div class="panel-group paginationjs"  role="paginator" aria-multiselectable="true">
+								<ul id="accordionRepoPaginator" class="paginationjs-pages"></ul>
+							</div>
 						</div>
 					</div>
 					<div role="tabpanel" class="tab-pane" id="tabUserInfo">
