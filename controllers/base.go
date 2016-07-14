@@ -56,7 +56,7 @@ func (b *BaseController) Prepare() {
 		user,err := dao.ChangeUserToken(UserToken)
 
 		log.Warning("login username: ", user.Username)
-		if err == nil {
+		if (err == nil && user.UserID != 0) {
 			b.SetSession("Lang", "zh-CN")
 			b.SetSession("userId", user.UserID)
 			b.SetSession("username", user.Username)
