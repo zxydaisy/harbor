@@ -6,4 +6,5 @@ Deploy/config/db/env
 Deploy/config/jobservice/env
 ui/ui
 *.pyc
+.idea
 jobservice/test
