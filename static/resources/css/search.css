@@ -21,23 +21,6 @@
 .search-result li {
   margin-bottom: 15px;
 }
-table > tbody > tr > td {
-  vertical-align: bottom;
-}
-
-.labels-panel li {
-  list-style: none;
-  display: inline-block;
-}
-
-.labels-panel .label-name{
-  width: 80px;
-  display: inline-block;
-  padding: 5px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  margin: 0 5px;
-}
 
 table > tbody > tr > td {
   vertical-align: bottom;
@@ -57,7 +40,23 @@ table > tbody > tr > td {
   margin: 0 5px;
 }
 
-<<<<<<< HEAD:static/resources/css/base.css
+table > tbody > tr > td {
+  vertical-align: bottom;
+}
+
+.labels-panel li {
+  list-style: none;
+  display: inline-block;
+}
+
+.labels-panel .label-name{
+  width: 80px;
+  display: inline-block;
+  padding: 5px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin: 0 5px;
+}
 
 
 /*导航的style*/
@@ -421,5 +420,3 @@ table > tbody > tr > td {
     height: 36px\9;
     line-height: 36px\9
 }
-=======
->>>>>>> 42b6b33c3e36ca79005a83a2f9343cc0b717a88d:static/resources/css/search.css

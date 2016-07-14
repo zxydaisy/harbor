@@ -17,8 +17,11 @@ package main
 
 import (
 	"fmt"
-	"github.com/vmware/harbor/utils/log"
+
+	log "github.com/vmware/harbor/utils/log"
+
 	"os"
+
 	_ "github.com/vmware/harbor/auth/db"
 	_ "github.com/vmware/harbor/auth/ldap"
 	"github.com/vmware/harbor/dao"

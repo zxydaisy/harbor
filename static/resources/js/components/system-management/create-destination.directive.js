@@ -34,23 +34,20 @@
     vm.update = update;
     vm.pingDestination = pingDestination;
     
-    vm.editable = true;
-    vm.notAvailable = false;
-    vm.pingAvailable = true;
-    vm.pingMessage = '';
-        
     vm.closeError = closeError;
     vm.toggleErrorMessage = false;
     vm.errorMessages = [];            
         
     vm.pingTIP = false;
     
+    $timeout(function(){   
     $scope.$watch('destination.endpoint', function(current) {
       if(current) {
         vm.notAvailable = false;
       }else{
         vm.notAvailable = true;
       }
+    });
     });
         
     function addNew() {
@@ -79,6 +76,7 @@
     function createDestinationSuccess(data, status) {
       console.log('Successful created destination.');
       vm.reload();
+      vm.closeDialog();
     }
     
     function createDestinationFailed(data, status) {
@@ -99,6 +97,7 @@
     function updateDestinationSuccess(data, status) {
       console.log('Successful update destination.');
       vm.reload();
+      vm.closeDialog();
     }
     
     function updateDestinationFailed(data, status) {
@@ -141,7 +140,6 @@
     function pingDestination() {
       
       vm.pingTIP = true;
-      vm.pingAvailable = false;
       
       var target = {
         'name': vm0.name,
@@ -160,12 +158,10 @@
     }
     
     function pingDestinationSuccess(data, status) {
-      vm.pingAvailable = true;
       vm.pingTIP = false;
       vm.pingMessage = $filter('tr')('successful_ping_target', []);
     }
     function pingDestinationFailed(data, status) {
-
       vm.pingTIP = false;
       vm.pingMessage = $filter('tr')('failed_to_ping_target', []) + (data && data.length > 0 ? ':' + data : '');
     }
@@ -194,8 +190,8 @@
           scope.form.$setPristine();
           scope.form.$setUntouched();
           
-          ctrl.notAvailble = false;
-          ctrl.pingAvailable = true;
+          ctrl.editable = true;
+          ctrl.notAvailble = true;
           ctrl.pingMessage = '';
           
           ctrl.pingTIP = false;
@@ -216,11 +212,11 @@
               ctrl.toggleErrorMessage = true;
             }
           }, true);
-          
         });
       });
       
       ctrl.save = save;
+      ctrl.closeDialog = closeDialog;
       
       function save(destination) {
         if(destination) {          
@@ -235,13 +231,11 @@
             ctrl.update(destination);
             break;
           }
-          
-          $timeout(function() {
-            if(!ctrl.toggleErrorMessage) {
-              element.find('#createDestinationModal').modal('hide');
             }
-          }, 50);
         }
+      
+      function closeDialog() {
+        element.find('#createDestinationModal').modal('hide');
       }
     }
   }

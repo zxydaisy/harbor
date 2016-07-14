@@ -98,6 +98,12 @@ func (ra *RepositoryAPI) Get() {
 			if strings.Contains(r, "/") && strings.Contains(r[strings.LastIndex(r, "/")+1:], q) && r[0:strings.LastIndex(r, "/")] == projectName {
 				resp = append(resp, r)
 			}
+			labelList,_ := dao.GetRepoLabels(r)
+			for _, label := range labelList{
+				if strings.Contains(label, q) {
+					resp = append(resp, label)
+		}
+			}
 		}
 		repoLs, _ := dao.GetRepoNames(q)
 		for _, repol := range repoLs {
@@ -162,7 +168,6 @@ func (ra *RepositoryAPI) AddLabel() {
 	ra.ServeJSON()
 }
 
-
 func (ra *RepositoryAPI) DeleteLabel() {
 	repoName := ra.GetString("repo_name")
 	if len(repoName) == 0 {
@@ -184,7 +189,6 @@ func (ra *RepositoryAPI) DeleteLabel() {
 	}
 	ra.ServeJSON()
 }
-
 
 func (ra *RepositoryAPI) GetLabels() {
 	repoName := ra.GetString("repo_name")

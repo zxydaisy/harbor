@@ -88,9 +88,8 @@
     }
    
     function getRepositoryComplete(data, status) {
-      vm.repositories = data.repoList || [];
+      vm.repositories = data || [];
       $scope.$broadcast('refreshTags', true);
-      $scope.$broadcast('refreshLabels',true)
     }
     
     function getRepositoryFailed(response) {
@@ -176,7 +175,11 @@
     return directive;
     
     function link(scope, element, attr, ctrl) {
-      
+      element.find('#txtSearchInput').on('keydown', function(e) {
+        if($(this).is(':focus') && e.keyCode === 13) {
+          ctrl.retrieve();
+        }
+      });
     }
   
   }

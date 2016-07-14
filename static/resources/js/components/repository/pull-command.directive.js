@@ -43,7 +43,12 @@
        
       ctrl.harborRegUrl = $('#HarborRegUrl').val() + '/';
     
+      element.find('input[type="text"]').on('click', function() {
+        $(this).select();
+      });
+      
       element.find('a').on('click', clickHandler);
+      
       function clickHandler(e) {
         element.find('input[type="text"]').select();
       }

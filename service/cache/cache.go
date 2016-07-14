@@ -31,8 +31,6 @@ var (
 	Cache             cache.Cache
 	endpoint          string
 	username          string
-	registryClient    *registry.Registry
-	repositoryClients map[string]*registry.Repository
 )
 
 const catalogKey string = "catalog"
@@ -110,8 +108,6 @@ func GetRepoFromCache() ([]string, error) {
 	return result.([]string), nil
 }
 
-
-
 // NewRegistryClient ...
 func NewRegistryClient(endpoint string, insecure bool, username, scopeType, scopeName string,
 	scopeActions ...string) (*registry.Registry, error) {
@@ -146,4 +142,3 @@ func NewRepositoryClient(endpoint string, insecure bool, username, repository, s
 	}
 	return client, nil
 }
-

@@ -21,6 +21,7 @@ type BaseController struct {
 	SelfRegistration bool
 	IsAdmin          bool
 	AuthMode         string
+	Production       bool
 }
 
 type langType struct {
@@ -41,6 +42,27 @@ var mappingLangNames map[string]string
 func (b *BaseController) Prepare() {
 
 	var lang string
+	log.Warning("Begin Access")
+	log.Warning("token: ", b.GetString("token"))
+
+	// ADD Token Validate
+	md5_token := b.GetString("md5_token")
+	log.Warning("md5 token value:", md5_token)
+	if md5_token != "" {
+		var UserToken models.UserToken
+		UserToken.UserId = 0
+		UserToken.Md5Token = md5_token
+
+		user,err := dao.ChangeUserToken(UserToken)
+
+		log.Warning("login username: ", user.Username)
+		if err == nil {
+			b.SetSession("Lang", "zh-CN")
+			b.SetSession("userId", user.UserID)
+			b.SetSession("username", user.Username)
+		}
+	}
+
 
 	langCookie, err := b.Ctx.Request.Cookie("language")
 	if err != nil {
@@ -98,6 +120,14 @@ func (b *BaseController) Prepare() {
 	b.AuthMode = authMode
 	b.Data["AuthMode"] = b.AuthMode
 
+	production := os.Getenv("PRODUCTION")
+	if production == "on" {
+		b.Production = true
+	}
+
+	if _, err := os.Stat(filepath.Join("static", "resources", "js", "harbor.app.min.js")); os.IsNotExist(err) {
+		b.Production = false
+	}
 }
 
 // Forward to setup layout and template for content for a page.
@@ -107,6 +137,15 @@ func (b *BaseController) Forward(title, templateName string) {
 	b.Data["Title"] = b.Tr(title)
 	b.LayoutSections = make(map[string]string)
 	b.LayoutSections["HeaderInclude"] = filepath.Join(prefixNg, viewPath, "header-include.htm")
+
+	if b.Production {
+		b.LayoutSections["HeaderScriptInclude"] = filepath.Join(prefixNg, viewPath, "script-min-include.htm")
+	} else {
+		b.LayoutSections["HeaderScriptInclude"] = filepath.Join(prefixNg, viewPath, "script-include.htm")
+	}
+
+	log.Debugf("Loaded HeaderScriptInclude file: %s", b.LayoutSections["HeaderScriptInclude"])
+
 	b.LayoutSections["FooterInclude"] = filepath.Join(prefixNg, viewPath, "footer-include.htm")
 	b.LayoutSections["HeaderContent"] = filepath.Join(prefixNg, viewPath, "header-content.htm")
 	b.LayoutSections["FooterContent"] = filepath.Join(prefixNg, viewPath, "footer-content.htm")
@@ -145,6 +184,43 @@ func (cc *CommonController) Login() {
 
 	cc.SetSession("userId", user.UserID)
 	cc.SetSession("username", user.Username)
+}
+
+
+func (cc *CommonController) LoginCargo() {
+	principal := cc.GetString("principal")
+	password := cc.GetString("password")
+	token := cc.GetString("token")
+	md5_token := cc.GetString("md5_token")
+
+	//query user is exist
+	userQuery := models.User{Username: principal,Password: password,Email: principal}
+	user, err := dao.GetUser(userQuery)
+
+	var userID int64
+	if (err != nil || user == nil) {
+		//Register User
+		var errRegister error
+		userID, errRegister = dao.Register(userQuery)
+		if errRegister != nil {
+			log.Errorf("Error occurred in Register: %v", errRegister)
+			cc.CustomAbort(http.StatusInternalServerError, "Internal error.")
+		}
+	}else{
+		userID = int64(user.UserID)
+	}
+
+	if token != "" {
+		var UserToken models.UserToken
+		UserToken.UserId = int(userID)
+		UserToken.Token = token
+		UserToken.Md5Token = md5_token
+
+		dao.ChangeUserToken(UserToken)
+	}
+
+	//cc.SetSession("userId", userID)
+	//cc.SetSession("username", user.Username)
 }
 
 // LogOut Habor UI

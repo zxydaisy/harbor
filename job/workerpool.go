@@ -90,8 +90,9 @@ func (w *Worker) handleRepJob(id int64) {
 		return
 	}
 	if w.SM.Parms.Enabled == 0 {
-		log.Debugf("The policy of job:%d is disabled, will cancel the job")
+		log.Debugf("The policy of job:%d is disabled, will cancel the job", id)
 		_ = dao.UpdateRepJobStatus(id, models.JobCanceled)
+		w.SM.Logger.Info("The job has been canceled")
 	} else {
 		w.SM.Start(models.JobRunning)
 	}

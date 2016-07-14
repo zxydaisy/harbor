@@ -29,7 +29,6 @@ import (
 	"github.com/vmware/harbor/utils/log"
 
 	"github.com/astaxie/beego"
-	//"k8s.io/kubernetes/pkg/api/resource"
 )
 
 // BaseAPI wraps common methods for controllers to host API

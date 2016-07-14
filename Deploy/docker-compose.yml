@@ -1,7 +1,6 @@
 version: '2'
 services:
   log:
-    container_name: logging
     build: ./log/
     volumes:
       - /var/log/harbor/:/var/log/docker/
@@ -24,9 +23,8 @@ services:
       driver: "syslog"
       options:  
         syslog-address: "tcp://127.0.0.1:1514"
-        syslog-tag: "registry"
+        tag: "registry"
   mysql:
-    container_name: mysql
     build: ./db/
     volumes:
       - /data/database:/var/lib/mysql
@@ -38,9 +36,8 @@ services:
       driver: "syslog"
       options:  
         syslog-address: "tcp://127.0.0.1:1514"
-        syslog-tag: "mysql"
+        tag: "mysql"
   ui:
-    container_name: ui
     build:
       context: ../
       dockerfile: Dockerfile.ui
@@ -49,15 +46,13 @@ services:
     volumes:
       - ./config/ui/app.conf:/etc/ui/app.conf
       - ./config/ui/private_key.pem:/etc/ui/private_key.pem
-      - ../static:/go/bin/static
-      - ../views:/go/bin/views
     depends_on:
       - log
     logging:
       driver: "syslog"
       options:  
         syslog-address: "tcp://127.0.0.1:1514"
-        syslog-tag: "ui"
+        tag: "ui"
   jobservice:
     build:
       context: ../
@@ -73,9 +68,8 @@ services:
       driver: "syslog"
       options:  
         syslog-address: "tcp://127.0.0.1:1514"
-        syslog-tag: "jobservice"
+        tag: "jobservice"
   proxy:
-    container_name: proxy
     image: library/nginx:1.9
     volumes:
       - ./config/nginx:/etc/nginx
@@ -91,4 +85,4 @@ services:
       driver: "syslog"
       options:  
         syslog-address: "tcp://127.0.0.1:1514"
-        syslog-tag: "proxy"
+        tag: "proxy"
