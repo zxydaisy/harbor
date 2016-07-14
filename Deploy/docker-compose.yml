@@ -23,7 +23,7 @@ services:
       driver: "syslog"
       options:  
         syslog-address: "tcp://127.0.0.1:1514"
-        syslog-tag: "registry"
+        tag: "registry"
   mysql:
     build: ./db/
     volumes:
@@ -36,7 +36,7 @@ services:
       driver: "syslog"
       options:  
         syslog-address: "tcp://127.0.0.1:1514"
-        syslog-tag: "mysql"
+        tag: "mysql"
   ui:
     build:
       context: ../
@@ -52,7 +52,23 @@ services:
       driver: "syslog"
       options:  
         syslog-address: "tcp://127.0.0.1:1514"
-        syslog-tag: "ui"
+        tag: "ui"
+  jobservice:
+    build:
+      context: ../
+      dockerfile: Dockerfile.job
+    env_file:
+      - ./config/jobservice/env
+    volumes:
+      - /data/job_logs:/var/log/jobs
+      - ./config/jobservice/app.conf:/etc/jobservice/app.conf
+    depends_on:
+      - ui
+    logging:
+      driver: "syslog"
+      options:  
+        syslog-address: "tcp://127.0.0.1:1514"
+        tag: "jobservice"
   proxy:
     image: library/nginx:1.9
     volumes:
@@ -69,4 +85,4 @@ services:
       driver: "syslog"
       options:  
         syslog-address: "tcp://127.0.0.1:1514"
-        syslog-tag: "proxy"
+        tag: "proxy"
