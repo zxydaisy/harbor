@@ -170,6 +170,5 @@ create table repo_label (
 create table user_token (
   user_id int,
   token varchar(128) BINARY NOT NULL,
-  md5_token varchar(32) BINARY NOT NULL,
-  index key (token)
+  md5_token varchar(32) BINARY NOT NULL
 );

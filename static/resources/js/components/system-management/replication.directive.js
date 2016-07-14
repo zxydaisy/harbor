@@ -54,7 +54,7 @@
       $scope.$emit('raiseError', true);
       console.log('Failed to list replication policy.');
     }
-    
+
     function confirmToTogglePolicy(policyId, enabled, name) {
       vm.policyId = policyId;
       vm.enabled = enabled;

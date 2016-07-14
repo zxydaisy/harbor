@@ -42,7 +42,7 @@
     function link(scope, element, attrs, ctrl) {
        
       ctrl.harborRegUrl = $('#HarborRegUrl').val() + '/';
-    
+      
       element.find('input[type="text"]').on('click', function() {
         $(this).select();
       });

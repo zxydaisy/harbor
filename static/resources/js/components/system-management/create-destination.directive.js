@@ -33,23 +33,23 @@
     vm.create = create;
     vm.update = update;
     vm.pingDestination = pingDestination;
-    
+        
     vm.closeError = closeError;
     vm.toggleErrorMessage = false;
     vm.errorMessages = [];            
         
     vm.pingTIP = false;
-    
+      
     $timeout(function(){   
-    $scope.$watch('destination.endpoint', function(current) {
-      if(current) {
-        vm.notAvailable = false;
-      }else{
-        vm.notAvailable = true;
-      }
+      $scope.$watch('destination.endpoint', function(current) {
+        if(current) {
+          vm.notAvailable = false;
+        }else{
+          vm.notAvailable = true;
+        }
+      });      
     });
-    });
-        
+    
     function addNew() {
       vm.modalTitle = $filter('tr')('add_new_destination', []);
       vm0.name = '';
@@ -66,7 +66,7 @@
         .error(getDestinationFailed);
     }
     
-    function create(destination) {
+    function create(destination) {   
       CreateDestinationService(destination.name, destination.endpoint, 
          destination.username, destination.password)
           .success(createDestinationSuccess)
@@ -189,7 +189,7 @@
         scope.$apply(function(){
           scope.form.$setPristine();
           scope.form.$setUntouched();
-          
+                    
           ctrl.editable = true;
           ctrl.notAvailble = true;
           ctrl.pingMessage = '';
@@ -231,8 +231,8 @@
             ctrl.update(destination);
             break;
           }
-            }
         }
+      }
       
       function closeDialog() {
         element.find('#createDestinationModal').modal('hide');

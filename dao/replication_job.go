@@ -57,7 +57,7 @@ func GetRepTargetByName(name string) (*models.RepTarget, error) {
 func GetRepTargetByEndpoint(endpoint string) (*models.RepTarget, error) {
 	o := GetOrmer()
 	t := models.RepTarget{
-		URL:      endpoint,
+		URL: endpoint,
 	}
 	err := o.Read(&t, "URL")
 	if err == orm.ErrNoRows {

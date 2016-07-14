@@ -423,7 +423,7 @@
           ctrl.update(postPayload);
           break;
         }
-          }
+      }
       
       function closeDialog() {
         element.find('#createPolicyModal').modal('hide');
