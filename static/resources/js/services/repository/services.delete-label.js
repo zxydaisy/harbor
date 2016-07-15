@@ -18,21 +18,20 @@
 
   angular
     .module('harbor.services.repository')
-    .factory('ListLabelService', ListLabelService);
+    .factory('DeleteLabelService', DeleteLabelService);
 
-  ListLabelService.$inject = ['$http', '$log'];
+  DeleteLabelService.$inject = ['$http', '$log'];
 
-  function ListLabelService($http, $log) {
-    return ListLabel;
+  function DeleteLabelService($http, $log) {
 
-    function ListLabel(repoName) {
+    return DeleteLabel;
+
+    function DeleteLabel(repoName, tag) {
+      var params = (tag === '') ? {'repo_name' : repoName} : {'repo_name': repoName, 'label': label};
       return $http
-        .get('/api/repositories/labels/label', {
-          'params': {
-            'repo_name': repoName
-          }
+        .delete('/api/repositories/labels', {
+          'params': params
         });
     }
   }
-
 })();

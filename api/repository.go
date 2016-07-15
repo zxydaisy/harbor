@@ -50,6 +50,8 @@ type repoPaging struct {
 
 // Get ...
 func (ra *RepositoryAPI) Get() {
+	pageId, _ := ra.GetInt("pageId")
+
 	projectID, err := ra.GetInt64("project_id")
 	if err != nil {
 		log.Errorf("Failed to get project id, error: %v", err)
@@ -96,24 +98,23 @@ func (ra *RepositoryAPI) Get() {
 			if strings.Contains(r, "/") && strings.Contains(r[strings.LastIndex(r, "/")+1:], q) && r[0:strings.LastIndex(r, "/")] == projectName {
 				resp = append(resp, r)
 			}
-			labelList,_ := dao.GetRepoLabels(r)
-			for _, label := range labelList{
-				if strings.Contains(label, q) {
-					resp = append(resp, label)
-				}
-			}
 		}
-		ra.Data["json"] = resp
+		repoLs, _ := dao.GetRepoNames(q)
+		for _, repol := range repoLs {
+			resp = append(resp, repol)
+		}
+		ra.Data["json"] = getSubPage(resp, pageId)
 	} else if len(projectName) > 0 {
 		for _, r := range repoList {
 			if strings.Contains(r, "/") && r[0:strings.LastIndex(r, "/")] == projectName {
 				resp = append(resp, r)
 			}
 		}
-		ra.Data["json"] = resp
+		ra.Data["json"] = getSubPage(resp, pageId)
 	} else {
-		ra.Data["json"] = repoList
+		ra.Data["json"] = getSubPage(repoList, pageId)
 	}
+
 	ra.ServeJSON()
 }
 
@@ -161,6 +162,7 @@ func (ra *RepositoryAPI) AddLabel() {
 	ra.ServeJSON()
 }
 
+
 func (ra *RepositoryAPI) DeleteLabel() {
 	repoName := ra.GetString("repo_name")
 	if len(repoName) == 0 {
@@ -182,6 +184,7 @@ func (ra *RepositoryAPI) DeleteLabel() {
 	}
 	ra.ServeJSON()
 }
+
 
 func (ra *RepositoryAPI) GetLabels() {
 	repoName := ra.GetString("repo_name")
