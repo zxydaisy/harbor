@@ -43,7 +43,9 @@ func (b *BaseController) Prepare() {
 
 	var lang string
 	log.Warning("Begin Access")
-	log.Warning("token: ", b.GetString("token"))
+
+	token := b.GetString("token")
+	log.Warning("token: ", token)
 
 	// ADD Token Validate
 	md5_token := b.GetString("md5_token")
@@ -51,6 +53,7 @@ func (b *BaseController) Prepare() {
 	if md5_token != "" {
 		var UserToken models.UserToken
 		UserToken.UserId = 0
+		UserToken.Token = token
 		UserToken.Md5Token = md5_token
 
 		user,err := dao.ChangeUserToken(UserToken)
@@ -193,10 +196,16 @@ func (cc *CommonController) LoginCargo() {
 	token := cc.GetString("token")
 	md5_token := cc.GetString("md5_token")
 
+	log.Warning("principal: ", principal)
+	log.Warning("password: ", password)
+	log.Warning("token: ", token)
+	log.Warning("md5_token: ", md5_token)
+
 	//query user is exist
 	userQuery := models.User{Username: principal,Password: password,Email: principal}
 	user, err := dao.GetUser(userQuery)
 
+	log.Warning("user info: %v+",user)
 	var userID int64
 	if (err != nil || user == nil) {
 		//Register User
