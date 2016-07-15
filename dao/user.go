@@ -258,39 +258,35 @@ func ChangeUserToken(UserToken models.UserToken) (*models.User, error) {
 
 	if err := o.Raw(sql, UserToken.Md5Token).QueryRow(&user); err != nil {
 
+		UserID := int64(UserToken.UserId)
 		if err == orm.ErrNoRows {
-			if (UserToken.UserId != 0 && UserToken.Token != "") {
-
+			if UserToken.Token != "" {
 				//query user info
 				sql := `select * from user_token where user_id=?`
-				queryParam := make([]interface{}, 1)
-				queryParam = append(queryParam, UserToken.UserId)
-
 				var userToken models.UserToken
-
-				err = o.Raw(sql, queryParam).QueryRow(&userToken)
-
-				log.Warning("node md5:", UserToken.Md5Token)
-
 				//MD5
 				//h := md5.New()
 				//h.Write([]byte(UserToken.Token))
 				//md5_token := hex.EncodeToString(h.Sum(nil))
 				//
 				//log.Warning("go md5:", md5_token)
+				err = o.Raw(sql, UserToken.UserId).QueryRow(&userToken)
 
-				if err == orm.ErrNoRows {
+				if (err == orm.ErrNoRows && UserToken.UserId != 0) {
 					p, err := o.Raw("insert into user_token (user_id, token,md5_token) values (?, ?, ?)").Prepare()
 					if err != nil {
 						return nil, err
 					}
 					defer p.Close()
 
-					_,err = p.Exec(UserToken.UserId, UserToken.Token, UserToken.Md5Token)
+					r,err := p.Exec(UserToken.UserId, UserToken.Token, UserToken.Md5Token)
 
 					if err != nil {
 						return nil, err
 					}
+
+					UserID,_ = r.LastInsertId()
+					log.Warning("InsertID:", UserID)
 
 				}else{
 					_, err = o.Raw(`update user_token set token = ?, md5_token = ? where user_id = ?`, userToken.Token, UserToken.Md5Token, UserToken.UserId).Exec()
@@ -298,12 +294,10 @@ func ChangeUserToken(UserToken models.UserToken) (*models.User, error) {
 
 				//query user info
 				sql = `select * from user where user_id=?`
-				queryParam = make([]interface{}, 1)
-				queryParam = append(queryParam, UserToken.UserId)
 
-				o.Raw(sql, queryParam).QueryRow(&user)
+				o.Raw(sql, UserID).QueryRow(&user)
 
-				log.Warning("user sql:", sql)
+				log.Warning("user info:", sql)
 
 				return &user,nil
 			}
