@@ -28,10 +28,10 @@
     function AddLabel(repoName, label) {
       var params = (label === '') ? {'repo_name' : repoName} : {'repo_name': repoName, 'label': label};
       return $http
-        .delete('/api/repositories/labels', {
+        .post('/api/repositories/labels', {
           'params': params
         });
     }
   }
-  
+
 })();

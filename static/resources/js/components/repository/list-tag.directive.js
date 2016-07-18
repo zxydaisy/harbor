@@ -20,12 +20,13 @@
     .module('harbor.repository')
     .directive('listTag', listTag);
 
-  ListTagController.$inject = ['$scope', 'ListTagService', 'ListLabelService', 'DeleteLabelService', '$filter', 'trFilter'];
+  ListTagController.$inject = ['$scope', 'ListTagService', 'ListLabelService', '$filter', 'trFilter'];
 
-  function ListTagController($scope, ListTagService, ListLabelService, DeleteLabelService, $filter, trFilter) {
+  function ListTagController($scope, ListTagService, ListLabelService, $filter, trFilter) {
     var vm = this;
 
     vm.tags = [];
+    vm.labelCount = {};
     vm.retrieve = retrieve;
 
     $scope.$watch('vm.repoName', function(current, origin) {
@@ -44,9 +45,8 @@
 
     vm.deleteTag = deleteTag;
     vm.deleteLabel = deleteLabel;
-    vm.isOpen = false;
     vm.showAddLabel = showAddLabel;
-
+    vm.isOpen = false;
 
     function retrieve() {
       ListTagService(vm.repoName)
@@ -58,16 +58,7 @@
         .error(getLabelFailed);
     }
 
-    function showAddLabel() {
-      if(vm.isOpen){
-        vm.isOpen = false;
-      }else{
-        vm.isOpen = true;
-      }
-    }
-
-
-    function getLabelSuccess() {
+    function getLabelSuccess(data) {
       vm.labels = data || [];
       vm.labelCount[vm.repoName] = vm.labels.length;
 
@@ -86,48 +77,6 @@
       console.log('Failed to get tag:' + data);
     }
 
-    //通过label删除代码吧
-    function deleteByLabel() {
-      $scope.$emit('modalTitle', $filter('tr')('alert_delete_tag_title', [vm.label]));
-      var message;
-      $scope.$emit('modalMessage',  $filter('tr')('alert_delete_tag', [vm.label]));
-
-      var emitInfo = {
-        'confirmOnly': false,
-        'contentType': 'text/html',
-        'action' : vm.deleteLabel
-      };
-
-      $scope.$emit('raiseInfo', emitInfo);
-    }
-
-
-    function deleteLabel() {
-      console.log('Delete image, repoName:' + vm.repoName + ', label:' + vm.label);
-      vm.toggleInProgress[vm.repoName + '|' + vm.label] = true;
-      DeleteLabelService(vm.repoName, vm.label)
-        .success(deleteLabelSuccess)
-        .error(deleteLabelFailed);
-    }
-
-    function deleteLabelSuccess(data, status) {
-      vm.toggleInProgress[vm.repoName + '|' + vm.label] = false;
-      vm.retrieve();
-    }
-
-    function deleteLabelFailed(data, status) {
-      vm.toggleInProgress[vm.repoName + '|' + vm.label] = false;
-
-      $scope.$emit('modalTitle', $filter('tr')('error'));
-      var message;
-      if(status === 401) {
-        message = $filter('tr')('failed_to_delete_repo_insuffient_permissions');
-      }else{
-        message = $filter('tr')('failed_to_delete_repo');
-      }
-      $scope.$emit('modalMessage', message);
-      $scope.$emit('raiseError', true);
-    }
 
     function getTagSuccess(data) {
 
@@ -155,6 +104,20 @@
       vm.deleteByTag();
     }
 
+    function deleteLabel(e) {
+      $scope.$emit('repoName', e.repoName);
+      $scope.$emit('label', e.label);
+      vm.deleteByLabel();
+    }
+
+    function showAddLabel() {
+      if(vm.isOpen){
+        vm.isOpen = false;
+      }else{
+        vm.isOpen = true;
+      }
+    }
+
   }
 
   function listTag() {
@@ -166,7 +129,8 @@
         'associateId': '=',
         'repoName': '=',
         'toggleInProgress': '=',
-        'deleteByTag': '&'
+        'deleteByTag': '&',
+        'deleteByLabel': '&'
       },
       'replace': true,
       'controller': ListTagController,
