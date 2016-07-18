@@ -39,9 +39,9 @@
 
 
     // 添加label
-    function addLabel(p) {
+    function addLabel(repoName, p) {
       if(p && angular.isDefined(p.labelName)) {
-        AddLabelService(vm.repoName, p.labelName)
+        AddLabelService(repoName, p.labelName)
           .success(addLabelSuccess)
           .error(addLabelFailed);
       }
