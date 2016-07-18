@@ -2,12 +2,14 @@ version: '2'
 services:
   log:
     build: ./log/
+    restart: always
     volumes:
       - /Mac/works/goProject/src/github.com/vmware/harbor/Deploy/local/log:/var/log/docker/
     ports:
       - 1514:514
   registry:
     image: library/registry:2.4.0
+    restart: always
     volumes:
       - /Mac/works/goProject/src/github.com/vmware/harbor/Deploy/local/data/registry:/storage
       - /Mac/works/goProject/src/github.com/vmware/harbor/Deploy/config/registry:/etc/registry
@@ -26,6 +28,7 @@ services:
         tag: "registry"
   mysql:
     build: ./db/
+    restart: always
     volumes:
       - /Mac/works/goProject/src/github.com/vmware/harbor/Deploy/local/data/mysql:/var/lib/mysql
       - /Mac/works/goProject/src/github.com/vmware/harbor/Deploy/db/registry.sql:/tmp/r.sql
@@ -44,6 +47,7 @@ services:
       dockerfile: Dockerfile.ui
     env_file:
       - ./config/ui/env
+    restart: always
     volumes:
       - /Mac/works/goProject/src/github.com/vmware/harbor/Deploy/config/ui/app.conf:/etc/ui/app.conf
       - /Mac/works/goProject/src/github.com/vmware/harbor/Deploy/config/ui/private_key.pem:/etc/ui/private_key.pem
@@ -60,6 +64,7 @@ services:
       dockerfile: Dockerfile.job
     env_file:
       - ./config/jobservice/env
+    restart: always
     volumes:
       - /Mac/works/goProject/src/github.com/vmware/harbor/Deploy/local/data/job_logs:/var/log/jobs
       - /Mac/works/goProject/src/github.com/vmware/harbor/Deploy/config/jobservice/app.conf:/etc/jobservice/app.conf
@@ -72,6 +77,7 @@ services:
         tag: "jobservice"
   proxy:
     image: library/nginx:1.9
+    restart: always
     volumes:
       - /Mac/works/goProject/src/github.com/vmware/harbor/Deploy/config/nginx:/etc/nginx
     ports:
