@@ -13,26 +13,25 @@
     limitations under the License.
 */
 (function() {
-
   'use strict';
 
   angular
     .module('harbor.services.repository')
-    .factory('ListLabelService', ListLabelService);
+    .factory('AddLabelService', AddLabelService);
 
-  ListLabelService.$inject = ['$http', '$log'];
+  AddLabelService.$inject = ['$http', '$log'];
 
-  function ListLabelService($http, $log) {
-    return ListLabel;
+  function AddLabelService($http, $log) {
 
-    function ListLabel(repoName) {
+    return AddLabel;
+
+    function AddLabel(repoName, label) {
+      var params = (label === '') ? {'repo_name' : repoName} : {'repo_name': repoName, 'label': label};
       return $http
-        .get('/api/repositories/labels/label', {
-          'params': {
-            'repo_name': repoName
-          }
+        .delete('/api/repositories/labels', {
+          'params': params
         });
     }
   }
-
+  
 })();
