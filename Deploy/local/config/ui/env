@@ -16,7 +16,7 @@ SELF_REGISTRATION=on
 PRODUCTION=on
 LOG_LEVEL=debug
 GODEBUG=netdns=cgo
-EXT_ENDPOINT=http://reg.mydomain.org
+EXT_ENDPOINT=http://registry.51yixiao.com
 TOKEN_URL=http://ui
 VERIFY_REMOTE_CERT=on
 PRODUCTION=on

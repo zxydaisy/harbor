@@ -13,10 +13,9 @@ LDAP_URL=ldaps://ldap.mydomain.com
 LDAP_BASE_DN=uid=%s,ou=people,dc=mydomain,dc=com
 UI_SECRET=Mm4G4TGSWA1V9uV6
 SELF_REGISTRATION=on
-PRODUCTION=on
+USE_COMPRESSED_JS=on
 LOG_LEVEL=debug
 GODEBUG=netdns=cgo
 EXT_ENDPOINT=https://registry.51yixiao.com
 TOKEN_URL=http://ui
 VERIFY_REMOTE_CERT=on
-PRODUCTION=on
