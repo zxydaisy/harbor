@@ -1,8 +1,7 @@
-<div id="collapse//vm.associateId//" class="panel-collapse collapse panel-r" role="tabpanel" aria-labelledby="heading//vm.associateId//">
+<div id="collapse//vm.associateId//" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading//vm.associateId//">
   <div class="panel-body">
-    <add-label ng-show="vm.isOpen" associate-id="vm.associateId" is-open="vm.isOpen" repo-name="vm.repoName" ></add-label>
     <div class="label-box">
-      <div class="label-add"><span class="glyphicon glyphicon-plus" ng-click="vm.showAddLabel()"></span></div>
+      <div class="label-add"><span class="glyphicon glyphicon-plus" ng-click="vm.showAddLabel({associateId : vm.associateId})"></span></div>
       <ul class="labels-panel" ng-repeat="label in vm.labels">
         <li class="label-name"><span class="glyphicon glyphicon-remove" ng-click="vm.deteleLabel({repoName: vm.repoName, label: label})" loading-progress hide-target="true" toggle-in-progress="vm.toggleInProgress[vm.repoName +'|'+ label]"></span></li>
       </ul>

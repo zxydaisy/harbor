@@ -39,9 +39,9 @@
 
 
     // 添加label
-    function addLabel(p) {
+    function addLabel(repoName, p) {
       if(p && angular.isDefined(p.labelName)) {
-        AddLalelService(p.labelName)
+        AddLabelService(repoName, p.labelName)
           .success(addLabelSuccess)
           .error(addLabelFailed);
       }
@@ -82,10 +82,12 @@
   function addLabel() {
     var directive = {
       'restrict': 'E',
-      'templateUrl': '/static/resources/js/components/project/add-label.directive.html',
+      'templateUrl': '/static/resources/js/components/repository/add-label.directive.html',
       'controller': AddLabelController,
       'scope' : {
-        'isOpen': '='
+        'isOpen': '=',
+        'repoName' : '=',
+        'associateId' : '='
       },
       'link': link,
       'controllerAs': 'vm',
@@ -94,6 +96,7 @@
     return directive;
 
     function link(scope, element, attrs, ctrl) {
+
       scope.form.$setPristine();
       scope.form.$setUntouched();
     }

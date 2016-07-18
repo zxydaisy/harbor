@@ -172,3 +172,7 @@
   border-radius: 5px;
   margin: 0 5px;
 }
+
+.panel-r {
+  position: relative;
+}

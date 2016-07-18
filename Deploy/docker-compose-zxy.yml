@@ -47,13 +47,13 @@ services:
     volumes:
       - /Users/zhangjinglong/harbor/Deploy/config/ui/app.conf:/etc/ui/app.conf
       - /Users/zhangjinglong/harbor/Deploy/config/ui/private_key.pem:/etc/ui/private_key.pem
-    depends_on:
-      - log
-    logging:
-      driver: "syslog"
-      options:
-        syslog-address: "tcp://127.0.0.1:1514"
-        tag: "ui"
+    # depends_on:
+      # - log
+    # logging:
+      # driver: "syslog"
+      # options:
+        # syslog-address: "tcp://127.0.0.1:1514"
+        # tag: "ui"
   jobservice:
     build:
       context: ../
@@ -63,13 +63,13 @@ services:
     volumes:
       - /Users/zhangjinglong/harbor/Deploy/local/data/job_logs:/var/log/jobs
       - /Users/zhangjinglong/harbor/Deploy/config/jobservice/app.conf:/etc/jobservice/app.conf
-    depends_on:
-      - ui
-    logging:
-      driver: "syslog"
-      options:
-        syslog-address: "tcp://127.0.0.1:1514"
-        tag: "jobservice"
+    # depends_on:
+      # - ui
+    # logging:
+      # driver: "syslog"
+      # options:
+        # syslog-address: "tcp://127.0.0.1:1514"
+        # tag: "jobservice"
   proxy:
     image: library/nginx:1.9
     volumes:
