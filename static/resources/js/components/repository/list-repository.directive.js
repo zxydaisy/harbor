@@ -19,9 +19,9 @@
     .module('harbor.repository')
     .directive('listRepository', listRepository);
 
-  ListRepositoryController.$inject = ['$scope', 'ListRepositoryService', 'DeleteRepositoryService', 'DeleteLabelService', 'AddLabelService', '$filter', 'trFilter', '$location', 'getParameterByName'];
+  ListRepositoryController.$inject = ['$scope', 'ListRepositoryService', 'DeleteRepositoryService', 'AddLabelService', '$filter', 'trFilter', '$location', 'getParameterByName'];
 
-  function ListRepositoryController($scope, ListRepositoryService, DeleteRepositoryService, DeleteLabelService, AddLabelService, $filter, trFilter, $location, getParameterByName) {
+  function ListRepositoryController($scope, ListRepositoryService, DeleteRepositoryService, AddLabelService, $filter, trFilter, $location, getParameterByName) {
 
     $scope.subsTabPane = 30;
 
@@ -155,12 +155,28 @@
       $scope.$emit('raiseInfo', emitInfo);
     }
 
+    function addLabel(p) {
+      if(p && angular.isDefined(p.labelName)) {
+        // AddLableService(p.labelName, vm.isPublic)
+        //   .success(addLabelSuccess)
+        //   .error(addLabelFailed);
+      }
+    }
+
+    function addLabelSuccess() {
+
+    }
+
+    function addLabelFailed() {
+
+    }
+
     function deleteLabel() {
       console.log('Delete image, repoName:' + vm.repoName + ', label:' + vm.label);
       vm.toggleInProgress[vm.repoName + '|' + vm.label] = true;
-      DeleteLabelService(vm.repoName, vm.label)
-        .success(deleteLabelSuccess)
-        .error(deleteLabelFailed);
+      // DeleteLabelService(vm.repoName, vm.label)
+      //   .success(deleteLabelSuccess)
+      //   .error(deleteLabelFailed);
     }
 
     function deleteLabelSuccess(data, status) {
