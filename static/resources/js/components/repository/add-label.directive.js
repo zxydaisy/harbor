@@ -37,8 +37,10 @@
     vm.hasError = false;
     vm.errorMessage = '';
 
+
+    // 添加label
     function addLabel(p) {
-      if(p && angular.isDefined(p.projectName)) {
+      if(p && angular.isDefined(p.labelName)) {
         AddLalelService(p.labelName)
           .success(addLabelSuccess)
           .error(addLabelFailed);

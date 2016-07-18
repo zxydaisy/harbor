@@ -19,9 +19,9 @@
     .module('harbor.repository')
     .directive('listRepository', listRepository);
 
-  ListRepositoryController.$inject = ['$scope', 'ListRepositoryService', 'DeleteRepositoryService', 'AddLabelService', '$filter', 'trFilter', '$location', 'getParameterByName'];
+  ListRepositoryController.$inject = ['$scope', 'ListRepositoryService', 'DeleteRepositoryService', '$filter', 'trFilter', '$location', 'getParameterByName'];
 
-  function ListRepositoryController($scope, ListRepositoryService, DeleteRepositoryService, AddLabelService, $filter, trFilter, $location, getParameterByName) {
+  function ListRepositoryController($scope, ListRepositoryService, DeleteRepositoryService, $filter, trFilter, $location, getParameterByName) {
 
     $scope.subsTabPane = 30;
 
@@ -89,10 +89,7 @@
 
     vm.deleteByRepo = deleteByRepo;
     vm.deleteByTag = deleteByTag;
-    vm.deleteByLabel = deleteByLabel;
-    vm.addLabel = addLabel;
     vm.deleteImage =  deleteImage;
-    vm.deleteLabel = deleteLabel;
 
     function retrieve(){
       ListRepositoryService(vm.projectId, vm.filterInput)
@@ -140,63 +137,6 @@
       $scope.$emit('raiseInfo', emitInfo);
     }
 
-    function deleteByLabel() {
-      $scope.$emit('modalTitle', $filter('tr')('alert_delete_tag_title', [vm.label]));
-      var message;
-      console.log('vm.labelCount:' + angular.toJson(vm.labelCount[vm.repoName]));
-      $scope.$emit('modalMessage',  $filter('tr')('alert_delete_tag', [vm.label]));
-
-      var emitInfo = {
-        'confirmOnly': false,
-        'contentType': 'text/html',
-        'action' : vm.deleteLabel
-      };
-
-      $scope.$emit('raiseInfo', emitInfo);
-    }
-
-    function addLabel(p) {
-      if(p && angular.isDefined(p.labelName)) {
-        // AddLableService(p.labelName, vm.isPublic)
-        //   .success(addLabelSuccess)
-        //   .error(addLabelFailed);
-      }
-    }
-
-    function addLabelSuccess() {
-
-    }
-
-    function addLabelFailed() {
-
-    }
-
-    function deleteLabel() {
-      console.log('Delete image, repoName:' + vm.repoName + ', label:' + vm.label);
-      vm.toggleInProgress[vm.repoName + '|' + vm.label] = true;
-      // DeleteLabelService(vm.repoName, vm.label)
-      //   .success(deleteLabelSuccess)
-      //   .error(deleteLabelFailed);
-    }
-
-    function deleteLabelSuccess(data, status) {
-      vm.toggleInProgress[vm.repoName + '|' + vm.label] = false;
-      vm.retrieve();
-    }
-
-    function deleteLabelFailed(data, status) {
-      vm.toggleInProgress[vm.repoName + '|' + vm.label] = false;
-
-      $scope.$emit('modalTitle', $filter('tr')('error'));
-      var message;
-      if(status === 401) {
-        message = $filter('tr')('failed_to_delete_repo_insuffient_permissions');
-      }else{
-        message = $filter('tr')('failed_to_delete_repo');
-      }
-      $scope.$emit('modalMessage', message);
-      $scope.$emit('raiseError', true);
-    }
 
     function deleteImage() {
 

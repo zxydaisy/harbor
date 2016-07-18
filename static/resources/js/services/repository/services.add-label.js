@@ -17,15 +17,15 @@
 
   angular
     .module('harbor.services.repository')
-    .factory('DeleteLabelService', DeleteLabelService);
+    .factory('AddLabelService', AddLabelService);
 
-  DeleteLabelService.$inject = ['$http', '$log'];
+  AddLabelService.$inject = ['$http', '$log'];
 
-  function DeleteLabelService($http, $log) {
+  function AddLabelService($http, $log) {
 
-    return DeleteLabel;
+    return AddLabel;
 
-    function DeleteLabel(repoName, label) {
+    function AddLabel(repoName, label) {
       var params = (label === '') ? {'repo_name' : repoName} : {'repo_name': repoName, 'label': label};
       return $http
         .delete('/api/repositories/labels', {
@@ -33,4 +33,5 @@
         });
     }
   }
+  
 })();
