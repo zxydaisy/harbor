@@ -59,6 +59,9 @@
       vm.hasError = true;
       vm.errorMessage = status;
       console.log('Failed to add project:' + status);
+      if(status === 409 && vm0.projectName !== '') {
+        vm.errorMessage = 'label_already_exist';
+      }
     }
 
     function cancel(form){

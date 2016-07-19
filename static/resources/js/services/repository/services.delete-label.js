@@ -26,13 +26,13 @@
 
     return DeleteLabel;
 
-    function DeleteLabel(repoName, tag) {
-      var params = (tag === '') ? {'repo_name' : repoName} : {'repo_name': repoName, 'label': label};
+    function DeleteLabel(repoName, label) {
+      var params = (label === '') ? {'repo_name' : repoName} : {'repo_name': repoName, 'label': label};
       return $http
         .delete('/api/repositories/labels', {
           'params': params
         });
     }
   }
-  
+
 })();

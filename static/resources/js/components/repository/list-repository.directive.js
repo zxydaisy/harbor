@@ -91,9 +91,14 @@
       vm.labelCount = val;
     });
 
+    $scope.$on('addedSuccess', function(e, val) {
+      vm.retrieve();
+    });
+
     vm.deleteByRepo = deleteByRepo;
     vm.deleteByTag = deleteByTag;
     vm.deleteByLabel = deleteByLabel;
+    vm.deleteLabel = deleteLabel;
     vm.deleteImage =  deleteImage;
 
     function retrieve(){

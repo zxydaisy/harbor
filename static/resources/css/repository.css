@@ -167,10 +167,10 @@
 .labels-panel li {
   list-style: none;
   display: inline-block;
+  margin: 5px 0;
 }
 
 .labels-panel .label-name{
-  width: 80px;
   display: inline-block;
   padding: 5px;
   border: 1px solid #ddd;
@@ -192,4 +192,5 @@
   display: inline-block;
   text-align: center;
   color: rgb(0, 84, 190);
+  cursor: pointer;
 }
