@@ -91,9 +91,14 @@
       vm.labelCount = val;
     });
 
+    $scope.$on('addedSuccess', function(e, val) {
+      vm.retrieve();
+    });
+
     vm.deleteByRepo = deleteByRepo;
     vm.deleteByTag = deleteByTag;
     vm.deleteByLabel = deleteByLabel;
+    vm.deleteLabel = deleteLabel;
     vm.deleteImage =  deleteImage;
 
     function retrieve(){
@@ -130,9 +135,9 @@
 
     //通过label删除代码吧
     function deleteByLabel() {
-      $scope.$emit('modalTitle', $filter('tr')('alert_delete_tag_title', [vm.label]));
+      $scope.$emit('modalTitle', $filter('tr')('alert_delete_label_title', [vm.label]));
       var message;
-      $scope.$emit('modalMessage',  $filter('tr')('alert_delete_tag', [vm.label]));
+      $scope.$emit('modalMessage',  $filter('tr')('alert_delete_label', [vm.label]));
 
       var emitInfo = {
         'confirmOnly': false,

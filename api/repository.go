@@ -48,6 +48,11 @@ type repoPaging struct {
 	RepoList []string `json:"repoList"`
 }
 
+type labelReq struct {
+	RepoName string `json:"repo_name"`
+	LabelName  string   `json:"label_name"`
+}
+
 // Get ...
 func (ra *RepositoryAPI) Get() {
 	projectID, err := ra.GetInt64("project_id")
@@ -141,23 +146,35 @@ func getSubPage(strs []string, pageNum int) (repoPaging) {
 }
 
 func (ra *RepositoryAPI) AddLabel() {
-	repoName := ra.GetString("repo_name")
+	var req labelReq
+	ra.DecodeJSONReq(&req)
+
+	repoName := req.RepoName
 	if len(repoName) == 0 {
 		ra.CustomAbort(http.StatusBadRequest, "repo_name is nil")
 	}
 
-	label := ra.GetString("label")
+	label := req.LabelName
 	if len(label) == 0 {
 		ra.CustomAbort(http.StatusBadRequest, "label is nil")
 	}
 
 	repoLabel := models.RepoLabel{RepoName: repoName, Label: label}
 	insertId, err := dao.AddLabel(repoLabel)
-	if err != nil {
+
+	if insertId == 0 {
+		log.Errorf("Error happened checking label existence in repo, error: %v, label name: %s", err, label)
+		ra.CustomAbort(http.StatusConflict, "Error happened checking label existence in repo")
+	}else if err != nil {
 		ra.CustomAbort(http.StatusInternalServerError, "Failed to insert label to db")
 	} else {
 		ra.Data["json"] = insertId
 	}
+	// if err != nil {
+	// 	ra.CustomAbort(http.StatusInternalServerError, "Failed to insert label to db")
+	// } else {
+	// 	ra.Data["json"] = insertId
+	// }
 	ra.ServeJSON()
 }
 

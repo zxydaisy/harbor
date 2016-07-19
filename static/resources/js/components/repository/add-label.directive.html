@@ -20,7 +20,7 @@
           <input type="text" class="form-control" placeholder="// 'label_name' | tr //" ng-model="p.labelName" name="uLabelName" ng-change="vm.reset()" ng-model-options="{ debounce: 250 }" project-name required>
           <div class="error-message">
             <div ng-messages="form.$submitted && form.uLabelName.$error">
-              <span ng-message="required">// 'project_name_is_required' | tr //</span>
+              <span ng-message="required">// 'label_name_is_required' | tr //</span>
             </div>
             <span ng-show="vm.hasError">// vm.errorMessage | tr //</span>
           </div>

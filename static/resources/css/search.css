@@ -26,39 +26,6 @@ table > tbody > tr > td {
   vertical-align: bottom;
 }
 
-.labels-panel li {
-  list-style: none;
-  display: inline-block;
-}
-
-.labels-panel .label-name{
-  width: 80px;
-  display: inline-block;
-  padding: 5px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  margin: 0 5px;
-}
-
-table > tbody > tr > td {
-  vertical-align: bottom;
-}
-
-.labels-panel li {
-  list-style: none;
-  display: inline-block;
-}
-
-.labels-panel .label-name{
-  width: 80px;
-  display: inline-block;
-  padding: 5px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  margin: 0 5px;
-}
-
-
 /*导航的style*/
 .paginationjs {
     line-height: 1.6;

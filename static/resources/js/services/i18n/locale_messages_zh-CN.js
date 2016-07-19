@@ -3,9 +3,9 @@
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
-        
+
         http://www.apache.org/licenses/LICENSE-2.0
-        
+
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -126,7 +126,9 @@ var locale_messages = {
   'username_or_password_is_incorrect': '用户名或密码不正确。',
   'username_email': '用户名/邮箱',
   'project_name_is_required': '项目名称为必填项。',
+  'label_name_is_required': '源数据为必填项。',
   'project_already_exist': '项目已存在。',
+  'label_already_exist': '源数据已存在。',
   'project_name_is_invalid': '项目名称无效。全部为小写字母，且不能包含空格。',
   'project_name_is_too_short': '项目名称长度过短，至少多于4个字符。',
   'project_name_is_too_long': '项目名称长度超出限制，最长30个字符。',
@@ -138,7 +140,9 @@ var locale_messages = {
   'alert_delete_repo': '即将删除镜像仓库下的所有标签，镜像空间将在垃圾回收过程中释放。<br/>' +
       '<br/>是否删除镜像仓库 "$0" ?',
   'alert_delete_tag_title': '确认删除',
+  'alert_delete_label_title': '确认删除',
   'alert_delete_tag': '注意：此镜像仓库下所有指向该镜像的标签将会被删除。<br/><br/>删除镜像标签 "$0" ?',
+  'alert_delete_label':'删除源数据？',
   'close': '关闭',
   'ok': '确认',
   'welcome': '欢迎使用Cargo!',
@@ -182,7 +186,7 @@ var locale_messages = {
   'endpoint_is_required': '终端URL为必填项。',
   'test_connection': '测试连接',
   'add_new_destination': '新建目标',
-  'edit_destination': '编辑目标',  
+  'edit_destination': '编辑目标',
   'successful_changed_password': '修改密码操作成功。',
   'change_profile': '修改账户信息',
   'successful_changed_profile': '修改账户信息操作成功。',
@@ -224,6 +228,7 @@ var locale_messages = {
   'failed_to_delete_repo': '无法删除镜像仓库。',
   'failed_to_delete_repo_insuffient_permissions': '无法删除镜像仓库，权限不足。',
   'failed_to_get_tag': '获取标签数据失败。',
+  'failed_to_get_label': '获取源数据失败。',
   'failed_to_get_log': '获取日志数据失败。',
   'failed_to_get_project': '获取项目数据失败。',
   'failed_to_update_user': '更新用户信息失败。',
@@ -255,7 +260,7 @@ var locale_messages = {
   'developer': '开发人员',
   'guest': '访客',
   'inline_help_role_title': '<strong>角色定义</strong>',
-  'inline_help_role': '<strong>项目管理员</strong>: “项目管理员”拥有一个项目的读/写和成员管理的权限。<br/>'+ 
+  'inline_help_role': '<strong>项目管理员</strong>: “项目管理员”拥有一个项目的读/写和成员管理的权限。<br/>'+
       '<strong>开发人员</strong>: “开发人员” 拥有一个项目的读/写权限。<br/>' +
       '<strong>访客</strong>: “访客”拥有特定项目的只读权限。',
   'inline_help_publicity_title': '<strong>公开项目</strong>',

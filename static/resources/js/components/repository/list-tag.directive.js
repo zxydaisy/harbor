@@ -20,9 +20,9 @@
     .module('harbor.repository')
     .directive('listTag', listTag);
 
-  ListTagController.$inject = ['$scope', 'ListTagService', 'ListLabelService', '$filter', 'trFilter'];
+  ListTagController.$inject = ['$scope', 'ListTagService', 'ListLabelService', 'AddLabelService', '$filter', 'trFilter'];
 
-  function ListTagController($scope, ListTagService, ListLabelService, $filter, trFilter) {
+  function ListTagController($scope, ListTagService, ListLabelService, AddLabelService, $filter, trFilter) {
     var vm = this;
 
     vm.tags = [];
@@ -44,7 +44,7 @@
 
 
     vm.deleteTag = deleteTag;
-    vm.deleteLabel = deleteLabel;
+    vm.showDeleteLabel = showDeleteLabel;
     vm.showAddLabel = showAddLabel;
     vm.isOpen = false;
 
@@ -72,7 +72,7 @@
 
     function getLabelFailed(data) {
       $scope.$emit('modalTitle', $filter('tr')('error'));
-      $scope.$emit('modalMessage', $filter('tr')('failed_to_get_tag') + data);
+      $scope.$emit('modalMessage', $filter('tr')('failed_to_get_label') + data);
       $scope.$emit('raiseError', true);
       console.log('Failed to get tag:' + data);
     }
@@ -93,7 +93,7 @@
 
     function getTagFailed(data) {
       $scope.$emit('modalTitle', $filter('tr')('error'));
-      $scope.$emit('modalMessage', $filter('tr')('failed_to_get_tag') + data);
+      $scope.$emit('modalMessage', $filter('tr')('failed_to_get_label') + data);
       $scope.$emit('raiseError', true);
       console.log('Failed to get tag:' + data);
     }
@@ -104,18 +104,25 @@
       vm.deleteByTag();
     }
 
-    function deleteLabel(e) {
+    function showDeleteLabel(e) {
       $scope.$emit('repoName', e.repoName);
       $scope.$emit('label', e.label);
       vm.deleteByLabel();
     }
 
     function showAddLabel() {
+    //  $scope.$emit('repoName', e.repoName);
+    //  $scope.$emit('label', e.label);
       if(vm.isOpen){
         vm.isOpen = false;
       }else{
         vm.isOpen = true;
       }
+    }
+
+    function refresh() {
+      vm.retrieve();
+      vm.isOpen = false;
     }
 
   }
