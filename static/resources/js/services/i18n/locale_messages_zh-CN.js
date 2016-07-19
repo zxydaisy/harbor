@@ -140,7 +140,9 @@ var locale_messages = {
   'alert_delete_repo': '即将删除镜像仓库下的所有标签，镜像空间将在垃圾回收过程中释放。<br/>' +
       '<br/>是否删除镜像仓库 "$0" ?',
   'alert_delete_tag_title': '确认删除',
+  'alert_delete_label_title': '确认删除',
   'alert_delete_tag': '注意：此镜像仓库下所有指向该镜像的标签将会被删除。<br/><br/>删除镜像标签 "$0" ?',
+  'alert_delete_label':'删除源数据？',
   'close': '关闭',
   'ok': '确认',
   'welcome': '欢迎使用Cargo!',
@@ -226,6 +228,7 @@ var locale_messages = {
   'failed_to_delete_repo': '无法删除镜像仓库。',
   'failed_to_delete_repo_insuffient_permissions': '无法删除镜像仓库，权限不足。',
   'failed_to_get_tag': '获取标签数据失败。',
+  'failed_to_get_label': '获取源数据失败。',
   'failed_to_get_log': '获取日志数据失败。',
   'failed_to_get_project': '获取项目数据失败。',
   'failed_to_update_user': '更新用户信息失败。',

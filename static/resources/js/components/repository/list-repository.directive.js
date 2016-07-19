@@ -135,9 +135,9 @@
 
     //通过label删除代码吧
     function deleteByLabel() {
-      $scope.$emit('modalTitle', $filter('tr')('alert_delete_tag_title', [vm.label]));
+      $scope.$emit('modalTitle', $filter('tr')('alert_delete_label_title', [vm.label]));
       var message;
-      $scope.$emit('modalMessage',  $filter('tr')('alert_delete_tag', [vm.label]));
+      $scope.$emit('modalMessage',  $filter('tr')('alert_delete_label', [vm.label]));
 
       var emitInfo = {
         'confirmOnly': false,

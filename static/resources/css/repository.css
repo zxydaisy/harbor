@@ -170,6 +170,10 @@
   margin: 5px 0;
 }
 
+.labels-panel li .glyphicon-remove {
+  cursor: pointer;
+}
+
 .labels-panel .label-name{
   display: inline-block;
   padding: 5px;

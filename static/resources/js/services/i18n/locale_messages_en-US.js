@@ -141,7 +141,9 @@ var locale_messages = {
       'The space of this repository will be recycled during garbage collection.<br/>' +
       '<br/>Delete repository "$0" now?',
   'alert_delete_tag_title': 'Confirm Deletion',
+  'alert_delete_label_title': 'Confirm Deletion',
   'alert_delete_tag': 'Note: All tags under this repository will be deleted if they are pointing to this image.<br/><br/>Delete tag "$0" now?',
+  'alert_delete_label': 'Delete label "$0" now?',
   'close': 'Close',
   'ok': 'OK',
   'welcome': 'Welcome to Cargo!',
@@ -226,6 +228,7 @@ var locale_messages = {
   'failed_to_delete_repo': 'Failed to delete repository. ',
   'failed_to_delete_repo_insuffient_permissions': 'Failed to delete repository, insuffient permissions.',
   'failed_to_get_tag': 'Failed to get tag.',
+  'failed_to_get_label': 'Failed to get label.',
   'failed_to_get_log': 'Failed to get logs.',
   'failed_to_get_project': 'Failed to get projects.',
   'failed_to_update_user': 'Failed to update user.',
