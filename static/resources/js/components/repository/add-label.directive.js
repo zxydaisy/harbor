@@ -29,14 +29,13 @@
     var vm0 = $scope.p;
     vm0.labelName = '';
 
-    vm.addLabel = addLabel;
     vm.cancel = cancel;
 
     vm.reset = reset;
 
     vm.hasError = false;
     vm.errorMessage = '';
-
+    vm.addLabel = addLabel;
 
     // 添加label
     function addLabel(repoName, p) {
@@ -52,6 +51,8 @@
       vm.hasError = false;
       vm.errorMessage = '';
       vm.isOpen = false;
+      //成功之后更新页面
+      vm.refresh();
     }
 
     function addLabelFailed(data, status) {
@@ -67,7 +68,6 @@
       }
       vm.isOpen = false;
       vm0.labelName = '';
-      vm.isPublic = false;
 
       vm.hasError = false; vm.close = close;
       vm.errorMessage = '';
@@ -87,7 +87,8 @@
       'scope' : {
         'isOpen': '=',
         'repoName' : '=',
-        'associateId' : '='
+        'associateId' : '=',
+        'refresh': '&'
       },
       'link': link,
       'controllerAs': 'vm',

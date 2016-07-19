@@ -25,12 +25,10 @@
 
     return AddLabel;
 
-    function AddLabel(repoName, label) {
-      var params = (label === '') ? {'repo_name' : repoName} : {'repo_name': repoName, 'label': label};
+    function AddLabel(repoName, labelName) {
+      var params = (labelName === '') ? {'repo_name' : repoName} : {'repo_name': repoName, 'label_name': labelName};
       return $http
-        .post('/api/repositories/labels', {
-          'params': params
-        });
+        .post('/api/repositories/labels', params);
     }
   }
 
