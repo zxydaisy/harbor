@@ -24,6 +24,7 @@ func AddLabel(repoLabel models.RepoLabel) (int64, error) {
 	o := GetOrmer()
 
 	sql := `select * from repo_label where repoName = ? and label = ?`
+<<<<<<< e4184fc00a3d867bffb0deb78c95a0fedab4d19e
 
 	type dummy struct{}
 	var d []dummy
@@ -32,6 +33,16 @@ func AddLabel(repoLabel models.RepoLabel) (int64, error) {
 		return 0, err
 	}
 
+=======
+
+	type dummy struct{}
+	var d []dummy
+	_, err := o.Raw(sql, repoLabel.RepoName, repoLabel.Label).QueryRows(&d)
+	if len(d) != 0 {
+		return 0, err
+	}
+
+>>>>>>> update add label add check label
 	sql = `insert into repo_label(repoName, label) values(?,?)`
 
 	p,_ := o.Raw(sql).Prepare()

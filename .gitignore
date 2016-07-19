@@ -4,5 +4,7 @@ jobservice/jobservice
 jobservice/test
 .idea
 *.log
+Deploy/local/data
+Deploy/local/log
 harborUI
 jobservice/jobservice
