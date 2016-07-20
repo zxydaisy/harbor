@@ -53,14 +53,23 @@ type labelReq struct {
 	LabelName  string   `json:"label_name"`
 }
 
+type repoReq struct {
+	ProjectID int64 `json:"project_id"`
+	PageNum int `json:"pageNum"`
+	Query string `json:q`
+}
+
 // Get ...
 func (ra *RepositoryAPI) Get() {
-	projectID, err := ra.GetInt64("project_id")
-	if err != nil {
-		log.Errorf("Failed to get project id, error: %v", err)
-		ra.RenderError(http.StatusBadRequest, "Invalid project id")
-		return
-	}
+	var req repoReq
+	ra.DecodeJSONReq(&req)
+	projectID := req.ProjectID
+	pageNum := req.PageNum
+	//if err != nil {
+	//	log.Errorf("Failed to get project id, error: %v", err)
+	//	ra.RenderError(http.StatusBadRequest, "Invalid project id")
+	//	return
+	//}
 	p, err := dao.GetProjectByID(projectID)
 	if err != nil {
 		log.Errorf("Error occurred in GetProjectById, error: %v", err)
@@ -94,30 +103,28 @@ func (ra *RepositoryAPI) Get() {
 	}
 
 	projectName := p.Name
-	q := ra.GetString("q")
+	q := req.Query
 	var resp []string
 	if len(q) > 0 {
 		for _, r := range repoList {
 			if strings.Contains(r, "/") && strings.Contains(r[strings.LastIndex(r, "/")+1:], q) && r[0:strings.LastIndex(r, "/")] == projectName {
 				resp = append(resp, r)
 			}
-			labelList,_ := dao.GetRepoLabels(r)
-			for _, label := range labelList{
-				if strings.Contains(label, q) {
-					resp = append(resp, label)
-				}
-			}
 		}
-		ra.Data["json"] = resp
+		repoLs, _ := dao.GetRepoNames(q)
+		for _, repol := range repoLs {
+			resp = append(resp, repol)
+		}
+		ra.Data["json"] = getSubPage(resp, pageNum)
 	} else if len(projectName) > 0 {
 		for _, r := range repoList {
 			if strings.Contains(r, "/") && r[0:strings.LastIndex(r, "/")] == projectName {
 				resp = append(resp, r)
 			}
 		}
-		ra.Data["json"] = resp
+		ra.Data["json"] = getSubPage(resp, pageNum)
 	} else {
-		ra.Data["json"] = repoList
+		ra.Data["json"] = getSubPage(repoList, pageNum)
 	}
 	ra.ServeJSON()
 }
