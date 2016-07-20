@@ -46,6 +46,7 @@ type RepositoryAPI struct {
 type repoPaging struct {
 	Pages    int `json:"pages"`
 	RepoList []string `json:"repoList"`
+	TotalItems int `json:"totalItems"`
 }
 
 type labelReq struct {
@@ -61,10 +62,21 @@ type repoReq struct {
 
 // Get ...
 func (ra *RepositoryAPI) Get() {
-	var req repoReq
-	ra.DecodeJSONReq(&req)
-	projectID := req.ProjectID
-	pageNum := req.PageNum
+	projectID, err := ra.GetInt64("project_id")
+ 	if err != nil {
+ 		log.Errorf("Failed to get project id, error: %v", err)
+ 		ra.RenderError(http.StatusBadRequest, "Invalid project id")
+ 		return
+ 	}
+
+	pageId, err := ra.GetInt("page_id")
+	if err != nil {
+		log.Errorf("Failed to get page id, error: %v", err)
+		ra.RenderError(http.StatusBadRequest, "Invalid page id")
+		return
+	}
+
+	pageNum := pageId - 1
 	//if err != nil {
 	//	log.Errorf("Failed to get project id, error: %v", err)
 	//	ra.RenderError(http.StatusBadRequest, "Invalid project id")
@@ -103,7 +115,8 @@ func (ra *RepositoryAPI) Get() {
 	}
 
 	projectName := p.Name
-	q := req.Query
+	q := ra.GetString("q")
+
 	var resp []string
 	if len(q) > 0 {
 		for _, r := range repoList {
@@ -140,6 +153,8 @@ func getSubPage(strs []string, pageNum int) (repoPaging) {
 	case length < (pageNum+1)*5 && length >= (pageNum)*5:
 		repoPage.RepoList = strs[pageNum*5 : length]
 	}
+
+  repoPage.TotalItems = length
 
 	if length % 5==0{
 		repoPage.Pages = length/5
