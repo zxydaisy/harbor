@@ -4,6 +4,7 @@ import (
 	"github.com/vmware/harbor/models"
 )
 
+<<<<<<< f1ff8a51483049d0c0cf27cbd8ad8ef6ffde3147
 // func AddLabel(repoLabel models.RepoLabel) (int64, error) {
 // 	o := GetOrmer()
 //
@@ -21,6 +22,9 @@ import (
 // }
 
 func AddLabel(repoLabel models.RepoLabel) (int64, error) {
+=======
+func AddLabel(repoLabel models.RepoLabel) (bool, error) {
+>>>>>>> 增加客户API接口+项目中文名称接口-新增两个数据表
 	o := GetOrmer()
 
 	sql := `select * from repo_label where repoName = ? and label = ?`
@@ -30,7 +34,7 @@ func AddLabel(repoLabel models.RepoLabel) (int64, error) {
 	var d []dummy
 	_, err := o.Raw(sql, repoLabel.RepoName, repoLabel.Label).QueryRows(&d)
 	if len(d) != 0 {
-		return 0, err
+		return false, err
 	}
 
 =======
@@ -51,7 +55,7 @@ func AddLabel(repoLabel models.RepoLabel) (int64, error) {
 
 	_, err = p.Exec(repoLabel.RepoName, repoLabel.Label)
 
-	return 1, err
+	return true, err
 }
 
 func DeletelLabel(repoLabel models.RepoLabel) (int64, error) {

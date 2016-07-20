@@ -172,3 +172,17 @@ create table user_token (
   token varchar(128) BINARY NOT NULL,
   md5_token varchar(32) BINARY NOT NULL
 );
+
+-- create a table for setting customer for project
+CREATE TABLE `customer` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '客户ID',
+  `name` varchar(32) DEFAULT NULL COMMENT '客户名称',
+  `tag` varchar(32) DEFAULT NULL COMMENT '客户标签-用于镜像过滤',
+  PRIMARY KEY (`id`)
+);
+
+-- create a table for setting desc for project
+CREATE TABLE `project_desc` (
+  `project_id` int(11) DEFAULT NULL COMMENT '项目ID',
+  `name` varchar(32) DEFAULT NULL COMMENT '项目中文名'
+);
