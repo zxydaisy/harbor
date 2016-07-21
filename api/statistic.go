@@ -83,6 +83,7 @@ func (s *StatisticAPI) Get() {
 		}
 	}
 	s.Data["json"] = proMap
+	log.Infof("proMap: %+v", proMap)
 	s.ServeJSON()
 }
 
@@ -95,7 +96,9 @@ func getRepoCountByProject(projectName string) int {
 	}
 	var resp int
 	if len(projectName) > 0 {
+		log.Info("projectName:", projectName)
 		for _, r := range repoList {
+			log.Infof("r: %+v", r)
 			if strings.Contains(r, "/") && r[0:strings.LastIndex(r, "/")] == projectName {
 				resp++
 			}

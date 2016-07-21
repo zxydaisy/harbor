@@ -94,6 +94,7 @@ func RefreshCatalogCache() error {
 func GetRepoFromCache() ([]string, error) {
 
 	result := Cache.Get(catalogKey)
+	log.Infof("catalog result: %+v",result)
 	if result == nil {
 		err := RefreshCatalogCache()
 		if err != nil {

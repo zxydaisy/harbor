@@ -101,7 +101,7 @@ func (ra *RepositoryAPI) Get() {
 		} else {
 			userID = ra.ValidateUser()
 		}
-
+		log.Info("userID:",userID)
 		if !checkProjectPermission(userID, projectID) {
 			ra.RenderError(http.StatusForbidden, "")
 			return
@@ -113,6 +113,8 @@ func (ra *RepositoryAPI) Get() {
 		log.Errorf("Failed to get repo from cache, error: %v", err)
 		ra.RenderError(http.StatusInternalServerError, "internal sever error")
 	}
+
+	log.Errorf("repoList: %v", repoList)
 
 	projectName := p.Name
 	q := ra.GetString("q")
@@ -182,15 +184,14 @@ func (ra *RepositoryAPI) AddLabel() {
 	}
 
 	repoLabel := models.RepoLabel{RepoName: repoName, Label: label}
-	insertId, err := dao.AddLabel(repoLabel)
-
-	if insertId == 0 {
+	res, err := dao.AddLabel(repoLabel)
+	if res == false {
 		log.Errorf("Error happened checking label existence in repo, error: %v, label name: %s", err, label)
 		ra.CustomAbort(http.StatusConflict, "Error happened checking label existence in repo")
 	}else if err != nil {
 		ra.CustomAbort(http.StatusInternalServerError, "Failed to insert label to db")
 	} else {
-		ra.Data["json"] = insertId
+		ra.Data["json"] = res
 	}
 	// if err != nil {
 	// 	ra.CustomAbort(http.StatusInternalServerError, "Failed to insert label to db")
