@@ -11,10 +11,13 @@
 
     return AddCustom;
 
-    function AddCustom(repoName, labelName) {
-      var params = (labelName === '') ? {'repo_name' : repoName} : {'repo_name': repoName, 'label_name': labelName};
+    function AddCustom(customName, tagName) {
+      //创建客户
       return $http
-        .post('/api/custom', params);
+        .post('/api/customer', {
+          name : customName,
+          tag : tagName
+        });
     }
   }
 

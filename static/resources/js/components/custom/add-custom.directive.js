@@ -27,7 +27,8 @@
 
     $scope.p = {};
     var vm0 = $scope.p;
-    vm0.labelName = '';
+    vm0.customName = '';
+    vm0.tagName = '';
 
     vm.cancel = cancel;
 
@@ -39,8 +40,8 @@
 
     // 添加label
     function addCustom( p) {
-      if(p && angular.isDefined(p.name)) {
-        AddCustomService(p.name, p.tag)
+      if(p && angular.isDefined(p.customName) && angular.isDefined(p.tagName)) {
+        AddCustomService(p.customName, p.tagName)
           .success(addCustomSuccess)
           .error(addCustomFailed);
       }
@@ -58,7 +59,10 @@
     function addCustomFailed(data, status) {
       vm.hasError = true;
       vm.errorMessage = status;
-      console.log('Failed to add project:' + status);
+      console.log('Failed to add tag:' + status);
+      if(status === 409 && vm0.tagName !== '') {
+        vm.errorMessage = 'tag_already_exist';
+      }
     }
 
     function cancel(form){

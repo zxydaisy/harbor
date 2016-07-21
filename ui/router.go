@@ -73,7 +73,7 @@ func initRouters() {
 	beego.Router("/api/repositories/labels/repo", &api.RepositoryAPI{}, "get:GetRepoNames")
 	beego.Router("/api/repositories/labels", &api.RepositoryAPI{}, "delete:DeleteLabel")
 
-	beego.Router("/api/customer/list", &api.CustomerController{}, "get:GetListCustomer")
+	beego.Router("/api/customer", &api.CustomerController{}, "get:GetListCustomer")
 	beego.Router("/api/customer", &api.CustomerController{}, "post:PostCustomer")
 	beego.Router("/api/customer/?:id", &api.CustomerController{}, "get:GetOneCustomer")
 	beego.Router("/api/customer", &api.CustomerController{}, "put:UpdateCustomer")

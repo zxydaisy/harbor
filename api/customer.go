@@ -47,7 +47,7 @@ func (c *CustomerController) PostCustomer() {
 		if res == true {
 			c.CustomAbort(http.StatusCreated, "add success")
 		}else{
-			c.CustomAbort(http.StatusOK, "customer is exist ")
+			c.CustomAbort(http.StatusConflict, "customer is exist ")
 		}
 		c.Data["json"] = res
 	}else{

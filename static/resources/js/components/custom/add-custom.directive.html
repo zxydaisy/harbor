@@ -2,16 +2,32 @@
   <form name="form" class="css-form form-custom form" novalidate>
     <div class="row">
       <div class="col-xs-10 col-md-10" repoName="vm.repoName">
+
         <div class="form-group col-md-7">
-          <input type="text" class="form-control" placeholder="// 'label_name' | tr //" ng-model="p.tagName" name="uTagName" ng-change="vm.reset()" ng-model-options="{ debounce: 250 }" tag-name required>
-          <input type="text" class="form-control" placeholder="// 'label_name' | tr //" ng-model="p.Name" name="uName" ng-change="vm.reset()" ng-model-options="{ debounce: 250 }" project-name required>
+          <input type="text" class="form-control" placeholder="// 'custom_name' | tr //" ng-model="p.customName" name="uCustomName" ng-change="vm.reset()" ng-model-options="{ debounce: 250 }" normal-name required>
           <div class="error-message">
-            <div ng-messages="form.$submitted && form.uLabelName.$error">
-              <span ng-message="required">// 'label_name_is_required' | tr //</span>
+            <div ng-messages="form.$submitted && form.uCustomName.$error">
+              <span ng-message="required">// 'custom_name_is_required' | tr //</span>
+              <span ng-message="projectName">// 'custom_name_is_invalid' | tr //</span>
             </div>
+          </div>
+        </div>
+        <div class="form-group col-md-7">
+          <input type="text" class="form-control" placeholder="// 'tag_name' | tr //" ng-model="p.tagName" name="uTagName" ng-change="vm.reset()" ng-model-options="{ debounce: 250 }" tag-name required>
+          <div class="error-message">
+            <div ng-messages="form.$submitted && form.uTagName.$error">
+              <span ng-message="required">// 'tag_name_is_required' | tr //</span>
+              <span ng-message="tagName">// 'tag_name_is_invalid' | tr //</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="error-message">
             <span ng-show="vm.hasError">// vm.errorMessage | tr //</span>
           </div>
         </div>
+
       </div>
       <div class="col-xs-2 col-md-2">
         <div class="form-group">
