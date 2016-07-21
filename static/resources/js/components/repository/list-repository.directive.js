@@ -47,6 +47,18 @@
     vm.tagCount = {};
     vm.labelCount = {};
 
+    //初始化分页
+    vm.paginationConf = {
+      currentPage: 1,
+      pagesLength: 5,
+      itemsPerPage: 5,
+      totalItems: 1,
+      numberOfPages : 1,
+      onChange: function(){
+        //vm.refresh(vm.paginationConf.currentPage);
+      }
+   };
+
     vm.projectId = getParameterByName('project_id', $location.absUrl());
     vm.retrieve();
 
@@ -95,48 +107,29 @@
       vm.retrieve();
     });
 
+    $scope.$watch('vm.paginationConf.currentPage', function(e, val) {
+      vm.retrieve();
+    });
+
     vm.deleteByRepo = deleteByRepo;
     vm.deleteByTag = deleteByTag;
     vm.deleteByLabel = deleteByLabel;
     vm.deleteLabel = deleteLabel;
     vm.deleteImage =  deleteImage;
-    vm.refresh = refresh;
 
     function retrieve(){
-      //默认传入0
-      ListRepositoryService(vm.projectId, vm.filterInput)
+      var pageId = vm.paginationConf.currentPage || 1;
+      //默认请求第0页
+      ListRepositoryService(vm.projectId, vm.filterInput, pageId)
         .success(getRepositoryComplete)
         .error(getRepositoryFailed);
     }
 
-    function refresh(pageId){
-      //点击分页，请求新页
-      // ListRepositoryService(vm.projectId, vm.filterInput, pageId)
-      //   .success(getRepositoryRefresh)
-      //   .error(getRepositoryFailed);
-    }
-
-    //第一次异步请求后，初始化分页
+    //根据根据配置初始化分页
     function getRepositoryComplete(data, status) {
-      vm.repositories = data || [];
-      //获取repo列表初始化化分页
-      vm.paginationConf = {
-        currentPage: 1,
-        totalItems: 80, //接口返回的数量
-        pagesLength: 5,
-        onChange: function(){
-          vm.refresh(vm.paginationConf.currentPage);
-        }
-     };
-      $scope.$broadcast('refreshTagsAndLabels', true);
-    }
-
-    //页面切换
-    function getRepositoryRefresh(data, status) {
-      if (data.totalItems) {
-          vm.paginationConf.totalItems = data.totalItems; //更新分页
-      }
-      vm.repositories = data || [];
+      vm.repositories = data.repoList || [];
+      vm.paginationConf.totalItems = data.totalItems || 1;
+      vm.paginationConf.numberOfPages =  data.pages || 1;
       $scope.$broadcast('refreshTagsAndLabels', true);
     }
 

@@ -198,3 +198,7 @@
   color: rgb(0, 84, 190);
   cursor: pointer;
 }
+
+.pagination li {
+  cursor: pointer;
+}
