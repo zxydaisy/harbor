@@ -184,14 +184,8 @@ func (ra *RepositoryAPI) AddLabel() {
 	}
 
 	repoLabel := models.RepoLabel{RepoName: repoName, Label: label}
-<<<<<<< f1ff8a51483049d0c0cf27cbd8ad8ef6ffde3147
-	insertId, err := dao.AddLabel(repoLabel)
-
-	if insertId == 0 {
-=======
 	res, err := dao.AddLabel(repoLabel)
 	if res == false {
->>>>>>> 增加客户API接口+项目中文名称接口-新增两个数据表
 		log.Errorf("Error happened checking label existence in repo, error: %v, label name: %s", err, label)
 		ra.CustomAbort(http.StatusConflict, "Error happened checking label existence in repo")
 	}else if err != nil {
