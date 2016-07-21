@@ -67,8 +67,8 @@ func (p *ProjectAPI) Prepare() {
 
 // Post ...
 func (p *ProjectAPI) Post() {
-	//p.userID = p.ValidateUser()
-	p.userID = 1
+	p.userID = p.ValidateUser()
+	// p.userID = 1
 	var req projectReq
 	var public int
 	p.DecodeJSONReq(&req)
