@@ -79,7 +79,7 @@ func (c *CustomerController) GetOneCustomer() {
 
 /*
 	Method: Post
- 	https://registry.51yixiao.com/api/customer/list
+ 	https://registry.51yixiao.com/api/customer
 	param: project_name 项目名称
 	ret: 返回客户列表
  */
