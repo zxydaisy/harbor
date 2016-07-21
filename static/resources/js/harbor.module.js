@@ -42,6 +42,8 @@
       'harbor.services.replication.policy',
       'harbor.services.replication.job',
       'harbor.services.destination',
+      'harbor.services.custom',
+      'harbor.custom',
       'harbor.summary',
       'harbor.pagination',
       'harbor.user.log',

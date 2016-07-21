@@ -86,6 +86,7 @@ var locale_messages = {
   'user': 'User',
   'no_user_logs': 'No data, start with Cargo now!',
   'users': 'Users',
+  'customs' : 'Customs',
   'my_projects': 'My Projects',
   'project_name': 'Project Name',
   'role': 'Role',
