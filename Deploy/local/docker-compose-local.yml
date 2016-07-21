@@ -3,14 +3,14 @@ services:
   log:
     build: ../log/
     volumes:
-      - /Users/zhangjinglong/harbor/Deploy/local/log:/var/log/docker/
+      - /works/goProject/src/github.com/vmware/harbor/Deploy/local/log:/var/log/docker/
     ports:
       - 1514:514
   registry:
     image: library/registry:2.4.0
     volumes:
-      - /Users/zhangjinglong/harbor/Deploy/local/data/registry:/storage
-      - /Users/zhangjinglong/harbor/Deploy/local/config/registry:/etc/registry
+      - /works/goProject/src/github.com/vmware/harbor/Deploy/local/data/registry:/storage
+      - /works/goProject/src/github.com/vmware/harbor/Deploy/local/config/registry:/etc/registry
     environment:
       - GODEBUG=netdns=cgo
     ports:
@@ -28,8 +28,8 @@ services:
   mysql:
     build: ../db/
     volumes:
-      - /Users/zhangjinglong/harbor/Deploy/local/data/mysql:/var/lib/mysql
-      - /Users/zhangjinglong/harbor/Deploy/db/registry.sql:/tmp/r.sql
+      - /works/goProject/src/github.com/vmware/harbor/Deploy/local/data/mysql:/var/lib/mysql
+      - /works/goProject/src/github.com/vmware/harbor/Deploy/db/registry.sql:/tmp/r.sql
     env_file:
       - ./config/db/env
     ports:
@@ -48,8 +48,8 @@ services:
 #    env_file:
 #      - ./config/ui/env
 #    volumes:
-#      - /Users/zhangjinglong/harbor/Deploy/local/config/ui/app.conf:/etc/ui/app.conf
-#      - /Users/zhangjinglong/harbor/Deploy/local/config/ui/private_key.pem:/etc/ui/private_key.pem
+#      - /works/goProject/src/github.com/vmware/harbor/Deploy/local/config/ui/app.conf:/etc/ui/app.conf
+#      - /works/goProject/src/github.com/vmware/harbor/Deploy/local/config/ui/private_key.pem:/etc/ui/private_key.pem
 #    depends_on:
 #      - log
 #    logging:
@@ -64,8 +64,8 @@ services:
 #    env_file:
 #      - ./config/jobservice/env
 #    volumes:
-#      - /Users/zhangjinglong/harbor/Deploy/local/data/job_logs:/var/log/jobs
-#      - /Users/zhangjinglong/harbor/Deploy/local/config/jobservice/app.conf:/etc/jobservice/app.conf
+#      - /works/goProject/src/github.com/vmware/harbor/Deploy/local/data/job_logs:/var/log/jobs
+#      - /works/goProject/src/github.com/vmware/harbor/Deploy/local/config/jobservice/app.conf:/etc/jobservice/app.conf
 #    depends_on:
 #      - ui
 #    logging:
@@ -76,7 +76,7 @@ services:
   proxy:
     image: library/nginx:1.9.0
     volumes:
-      - /Users/zhangjinglong/harbor/Deploy/local/config/nginx:/etc/nginx
+      - /works/goProject/src/github.com/vmware/harbor/Deploy/local/config/nginx:/etc/nginx
     ports:
       - 80:80
       - 443:443

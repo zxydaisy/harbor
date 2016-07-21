@@ -191,7 +191,7 @@ func (ra *RepositoryAPI) AddLabel() {
 	}else if err != nil {
 		ra.CustomAbort(http.StatusInternalServerError, "Failed to insert label to db")
 	} else {
-		ra.Data["json"] = insertId
+		ra.Data["json"] = res
 	}
 	// if err != nil {
 	// 	ra.CustomAbort(http.StatusInternalServerError, "Failed to insert label to db")

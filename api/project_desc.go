@@ -1,13 +1,18 @@
 package api
 
 import (
-	"strconv"
 	"github.com/vmware/harbor/models"
 	"github.com/vmware/harbor/dao"
+	"github.com/vmware/harbor/utils/log"
 )
 
 type ProjectDescController struct {
 	BaseAPI
+}
+
+type ProjectDescReq struct {
+ 	ProjectId int     `json:"project_id"`
+	Name      string   `json:"name"`
 }
 
 /*
@@ -16,13 +21,15 @@ type ProjectDescController struct {
  param: name
  */
 func (c *ProjectDescController) UpdateProject() {
-	idStr := c.Ctx.Input.Param(":id")
-	id, _ := strconv.Atoi(idStr)
+
+	var req ProjectDescReq
+	c.DecodeJSONReq(&req)
 
 	m := models.ProjectDesc{}
-	m.ProjectId = id
-	m.Name = c.GetString("name")
+	m.ProjectId = req.ProjectId
+	m.Name = req.Name
 
+	log.Infof("m: %+v",m)
 	if err := dao.UpdateProjectById(m); err == nil {
 			c.Data["json"] = "OK"
 	} else {

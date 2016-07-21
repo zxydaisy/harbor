@@ -12,6 +12,13 @@ type CustomerController struct {
 	BaseAPI
 }
 
+type CustomerReq struct {
+	Id int `json:"id"`
+	Name string `json:"name"`
+	Tag  string   `json:"tag"`
+}
+
+
 /*
 	Method: Post
  	https://registry.51yixiao.com/api/customer
@@ -20,12 +27,16 @@ type CustomerController struct {
  */
 
 func (c *CustomerController) PostCustomer() {
-	name := c.GetString("name")
+
+	var req CustomerReq
+	c.DecodeJSONReq(&req)
+
+	name := req.Name
 	if len(name) == 0 {
 		c.CustomAbort(http.StatusBadRequest, "name is nil")
 	}
 
-	tag := c.GetString("tag")
+	tag := req.Tag
 	if len(tag) == 0 {
 		c.CustomAbort(http.StatusBadRequest, "tag is nil")
 	}
@@ -92,13 +103,14 @@ func (c *CustomerController) GetListCustomer() {
  param: tag CMM
  */
 func (c *CustomerController) UpdateCustomer() {
-	idStr := c.Ctx.Input.Param(":id")
-	id, _ := strconv.Atoi(idStr)
+
+	var req CustomerReq
+	c.DecodeJSONReq(&req)
 
 	m := models.Customer{}
-	m.Id = id
-	m.Name = c.GetString("name")
-	m.Tag = c.GetString("tag")
+	m.Id = req.Id
+	m.Name = req.Name
+	m.Tag = req.Tag
 
 	log.Infof("user: %+v",m)
 

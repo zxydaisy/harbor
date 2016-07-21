@@ -20,7 +20,7 @@ import (
 // 	return insertId, err
 // }
 
-func AddLabel(repoLabel models.RepoLabel) (int64, error) {
+func AddLabel(repoLabel models.RepoLabel) (bool, error) {
 	o := GetOrmer()
 
 	sql := `select * from repo_label where repoName = ? and label = ?`

@@ -6,7 +6,7 @@ echo "Usage: #jsminify [src] [dest]"
 #prepare workspace
 rm -rf $2 /tmp/harbor.app.temp.js
 
-BASEPATH=/go/bin
+BASEPATH=/works/goProject/src/github.com/vmware/harbor
 #concat the js files from js include file
 echo "Concat js files..."
 
@@ -15,6 +15,7 @@ do
     if [ -n "$LINE" ] 
     then
         TEMP="$BASEPATH""$LINE"
+        printf $TEMP
         cat `echo "$TEMP" | sed 's/<script src=\"//g' |sed 's/\"><\/script>//g'` >> /tmp/harbor.app.temp.js
         printf "\n" >> /tmp/harbor.app.temp.js
     fi

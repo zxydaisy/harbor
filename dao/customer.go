@@ -47,7 +47,7 @@ func GetProjectAllCustomer(projectName string) ([]models.Customer, error) {
 	//返回项目的客户列表
 	//select * from customer where tag in (select label from repo_label where repoName like 'library%' group by label)
 	sql := `select * from customer where tag in (select label from repo_label
-	 where del=0 and repoName like ? group by label)`
+	 where repoName like ? group by label)`
 
 	var customer []models.Customer
 
@@ -80,4 +80,3 @@ func DeleteCustomer(id int) (err error) {
 	}
 	return err
 }
-
