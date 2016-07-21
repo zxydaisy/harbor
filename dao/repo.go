@@ -28,7 +28,7 @@ func AddLabel(repoLabel models.RepoLabel) (int64, error) {
 	var d []dummy
 	_, err := o.Raw(sql, repoLabel.RepoName, repoLabel.Label).QueryRows(&d)
 	if len(d) != 0 {
-		return 0, err
+		return false, err
 	}
 	sql = `insert into repo_label(repoName, label) values(?,?)`
 
@@ -38,7 +38,7 @@ func AddLabel(repoLabel models.RepoLabel) (int64, error) {
 
 	_, err = p.Exec(repoLabel.RepoName, repoLabel.Label)
 
-	return 1, err
+	return true, err
 }
 
 func DeletelLabel(repoLabel models.RepoLabel) (int64, error) {
