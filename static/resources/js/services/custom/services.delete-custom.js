@@ -12,12 +12,9 @@
 
     return DeleteCustom;
 
-    function DeleteCustom(repoName, label) {
-      var params = (label === '') ? {'repo_name' : repoName} : {'repo_name': repoName, 'label': label};
+    function DeleteCustom(customId) {
       return $http
-        .delete('/api/customer', {
-          'params': params
-        });
+        .delete('/api/customer/'+customId, {});
     }
   }
 

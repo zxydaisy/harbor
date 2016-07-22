@@ -251,6 +251,7 @@ var locale_messages = {
   'failed_to_sign_up': 'Failed to sign up.',
   'failed_to_add_user': 'Failed to add user.',
   'failed_to_delete_user': 'Failed to delete user.',
+  'failed_to_delete_custom': 'Failed to delete custom.',
   'failed_to_list_user': 'Failed to list user data.',
   'failed_to_toggle_admin': 'Failed to toggle admin user.',
   'failed_to_list_destination': 'Failed to list destinations.',

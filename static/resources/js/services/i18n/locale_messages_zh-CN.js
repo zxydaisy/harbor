@@ -251,6 +251,7 @@ var locale_messages = {
   'failed_to_sign_up': '注册用户失败。',
   'failed_to_add_user': '新增用户失败。',
   'failed_to_delete_user': '删除用户失败。',
+  'failed_to_delete_custom': '删除客户失败。',
   'failed_to_list_user': '获取用户数据失败。',
   'failed_to_toggle_admin': '切换管理员用户失败。',
   'failed_to_list_destination': '获取目标数据失败。',

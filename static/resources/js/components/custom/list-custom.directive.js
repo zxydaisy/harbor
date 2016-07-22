@@ -19,9 +19,9 @@
     .module('harbor.custom')
     .directive('listCustom', listCustom);
 
-  ListCustomController.$inject = ['$scope', 'ListCustomService', '$filter', 'trFilter', '$location', 'getParameterByName'];
+  ListCustomController.$inject = ['$scope', 'ListCustomService', 'DeleteCustomService', '$filter', 'trFilter', '$location', 'getParameterByName'];
 
-  function ListCustomController($scope, ListCustomService, $filter, trFilter, $location, getParameterByName) {
+  function ListCustomController($scope, ListCustomService, DeleteCustomService, $filter, trFilter, $location, getParameterByName) {
 
     $scope.subsTabPane = 30;
 
@@ -65,7 +65,7 @@
 
     function retrieve(){
       //默认请求第0页
-      ListCustomService(vm.projectId, vm.filterInput)
+      ListCustomService()
         .success(getCustomComplete)
         .error(getCustomFailed);
     }
@@ -91,7 +91,7 @@
       vm.selectedCustomId = customId;
 
       $scope.$emit('modalTitle', $filter('tr')('confirm_delete_user_title'));
-      $scope.$emit('modalMessage', $filter('tr')('confirm_delete_user', [custom]));
+      $scope.$emit('modalMessage', $filter('tr')('confirm_delete_user', [name]));
 
       var emitInfo = {
         'confirmOnly': false,
@@ -115,7 +115,7 @@
 
     function deleteCustomFailed(data, status) {
       $scope.$emit('modalTitle', $filter('tr')('error'));
-      $scope.$emit('modalMessage', $filter('tr')('failed_to_delete_user'));
+      $scope.$emit('modalMessage', $filter('tr')('failed_to_delete_custom'));
       $scope.$emit('raiseError', true);
       console.log('Failed to delete user.');
     }
