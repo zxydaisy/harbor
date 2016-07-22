@@ -199,6 +199,7 @@ func (p *ProjectAPI) List() {
 		}
 		projectList[i].RepoCount = getRepoCountByProject(projectList[i].Name)
 	}
+	log.Infof("projectList: %+v", projectList)
 	p.Data["json"] = projectList
 	p.ServeJSON()
 }

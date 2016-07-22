@@ -13,9 +13,9 @@ type CustomerController struct {
 }
 
 type CustomerReq struct {
-	Id int `json:"id"`
-	Name string `json:"name"`
-	Tag  string   `json:"tag"`
+	Id int 					`json:"id"`
+	Name string 		`json:"name"`
+	Tag  string   	`json:"tag"`
 }
 
 
@@ -84,9 +84,9 @@ func (c *CustomerController) GetOneCustomer() {
 	ret: 返回客户列表
  */
 func (c *CustomerController) GetListCustomer() {
-	projectName := c.GetString("project_name")
-	log.Infof("projectName: %+v",projectName )
-	l, err := dao.GetProjectAllCustomer(projectName)
+	projectId := c.GetString("project_id")
+	log.Infof("projectID: %+v",projectId )
+	l, err := dao.GetProjectAllCustomer(projectId)
 	if err != nil {
 		c.Data["json"] = err.Error()
 	} else {
