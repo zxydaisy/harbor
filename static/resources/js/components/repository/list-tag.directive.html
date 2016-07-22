@@ -27,8 +27,7 @@
             <pull-command repo-name="//vm.repoName//" tag="//tag//"></pull-command>
           </td>
           <td style="text-align: center;">
-            <a href="//vm.consoleWebAppUrl" ng-click="vm.setImage({repoName: vm.repoName, tag : tag})" title="// 'select_all' | tr //"><span class="glyphicon glyphicon-duplicate"></span></a>
-
+            <a href="//vm.consoleWebAppUrl//?image=//vm.harborRegUrl////vm.repoName//://tag//"><span class="glyphicon glyphicon-new-window"></span></a>
             <a href="javascript:void(0);" ng-click="vm.deleteTag({repoName: vm.repoName, tag: tag})" title="// 'delete_tag' | tr //" loading-progress hide-target="true" toggle-in-progress="vm.toggleInProgress[vm.repoName +'|'+ tag]">
               <span class="glyphicon glyphicon-trash"></span>
             </a>
