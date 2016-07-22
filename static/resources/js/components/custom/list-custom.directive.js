@@ -19,9 +19,9 @@
     .module('harbor.custom')
     .directive('listCustom', listCustom);
 
-  ListCustomController.$inject = ['$scope', 'ListCustomService', '$filter', 'trFilter', '$location', 'getParameterByName'];
+  ListCustomController.$inject = ['$scope', 'ListCustomService', 'DeleteCustomService', '$filter', 'trFilter', '$location', 'getParameterByName'];
 
-  function ListCustomController($scope, ListCustomService, $filter, trFilter, $location, getParameterByName) {
+  function ListCustomController($scope, ListCustomService, DeleteCustomService, $filter, trFilter, $location, getParameterByName) {
 
     $scope.subsTabPane = 30;
 
@@ -33,6 +33,7 @@
     vm.toggleInProgress = [];
 
     vm.retrieve = retrieve;
+    vm.tags = [];
     vm.deleteCustom = deleteCustom;
     vm.confirmToDelete = confirmToDelete;
     vm.showAddCustom = showAddCustom;
@@ -58,20 +59,20 @@
     });
 
     //添加客户成功之后，刷新列表
-    $scope.$on('addedSuccess', function(e, val) {
+    $scope.$on('addedCustomSuccess', function(e, val) {
       vm.retrieve();
     });
 
     function retrieve(){
       //默认请求第0页
-      ListCustomService(vm.projectId, vm.filterInput)
+      ListCustomService()
         .success(getCustomComplete)
         .error(getCustomFailed);
     }
 
-    //根据根据配置初始化分页
     function getCustomComplete(data, status) {
       //获取客户列表
+      vm.customs = data || [];
     }
 
     function getCustomFailed(response) {
@@ -86,11 +87,11 @@
       }
     }
 
-    function confirmToDelete(customId, custom) {
+    function confirmToDelete(customId, name) {
       vm.selectedCustomId = customId;
 
       $scope.$emit('modalTitle', $filter('tr')('confirm_delete_user_title'));
-      $scope.$emit('modalMessage', $filter('tr')('confirm_delete_user', [custom]));
+      $scope.$emit('modalMessage', $filter('tr')('confirm_delete_user', [name]));
 
       var emitInfo = {
         'confirmOnly': false,
@@ -114,7 +115,7 @@
 
     function deleteCustomFailed(data, status) {
       $scope.$emit('modalTitle', $filter('tr')('error'));
-      $scope.$emit('modalMessage', $filter('tr')('failed_to_delete_user'));
+      $scope.$emit('modalMessage', $filter('tr')('failed_to_delete_custom'));
       $scope.$emit('raiseError', true);
       console.log('Failed to delete user.');
     }

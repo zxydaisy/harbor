@@ -6,9 +6,8 @@
     .module('harbor.validator')
     .directive('tagName', tagName);
 
-  tagName.$inject = ['TAG_REGEXP']; //只能为英文的标记名称
-
-  function tagName(TAG_REGEXP) {
+  tagName.$inject = ['TAG_REGEXP', 'CH_REGEXP']; //中文别名
+  function tagName(TAG_REGEXP, CH_REGEXP) {
     var directive = {
       'require': 'ngModel',
       'link': link
@@ -19,7 +18,7 @@
       ctrl.$validators.tagName = validator;
 
       function validator(modelValue, viewValue) {
-        return TAG_REGEXP.test(modelValue);
+        return TAG_REGEXP.test(modelValue) || CH_REGEXP.test(modelValue);
       }
     }
   }
