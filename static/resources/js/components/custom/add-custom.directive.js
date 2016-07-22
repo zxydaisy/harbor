@@ -17,55 +17,52 @@
   'use strict';
 
   angular
-    .module('harbor.project')
-    .directive('addProject', addProject);
+    .module('harbor.custom')
+    .directive('addCustom', addCustom);
 
-  AddProjectController.$inject = ['AddProjectService', '$scope'];
+  AddCustomController.$inject = ['AddCustomService', '$scope'];
 
-  function AddProjectController(AddProjectService, $scope) {
+  function AddCustomController(AddCustomService, $scope) {
     var vm = this;
 
     $scope.p = {};
     var vm0 = $scope.p;
-    vm0.projectName = '';
+    vm0.customName = '';
     vm0.tagName = '';
-    vm.isPublic = false;
 
-    vm.addProject = addProject;
     vm.cancel = cancel;
 
     vm.reset = reset;
 
     vm.hasError = false;
     vm.errorMessage = '';
+    vm.addCustom = addCustom;
 
-    function addProject(p) {
-      if(p && angular.isDefined(p.projectName) &&  angular.isDefined(p.tagName)) {
-        AddProjectService(p.projectName, p.tagName, vm.isPublic)
-          .success(addProjectSuccess)
-          .error(addProjectFailed);
+    // 添加label
+    function addCustom( p) {
+      if(p && angular.isDefined(p.customName) && angular.isDefined(p.tagName)) {
+        AddCustomService(p.customName, p.tagName)
+          .success(addCustomSuccess)
+          .error(addCustomFailed);
       }
     }
 
-    function addProjectSuccess(data, status) {
+    function addCustomSuccess(data, status) {
       $scope.$emit('addedSuccess', true);
       vm.hasError = false;
       vm.errorMessage = '';
       vm.isOpen = false;
+      //成功之后更新页面
+      vm.refresh();
     }
 
-    function addProjectFailed(data, status) {
+    function addCustomFailed(data, status) {
       vm.hasError = true;
-      if(status === 400 && vm0.projectName !== '' && vm0.projectName.length < 4) {
-        vm.errorMessage = 'project_name_is_too_short';
+      vm.errorMessage = status;
+      console.log('Failed to add tag:' + status);
+      if(status === 409 && vm0.tagName !== '') {
+        vm.errorMessage = 'tag_already_exist';
       }
-      if(status === 400 && vm0.projectName.length > 30) {
-        vm.errorMessage = 'project_name_is_too_long';
-      }
-      if(status === 409 && vm0.projectName !== '') {
-        vm.errorMessage = 'project_already_exist';
-      }
-      console.log('Failed to add project:' + status);
     }
 
     function cancel(form){
@@ -74,8 +71,7 @@
         form.$setUntouched();
       }
       vm.isOpen = false;
-      vm0.projectName = '';
-      vm.isPublic = false;
+      vm0.labelName = '';
 
       vm.hasError = false; vm.close = close;
       vm.errorMessage = '';
@@ -87,11 +83,11 @@
     }
   }
 
-  function addProject() {
+  function addCustom() {
     var directive = {
       'restrict': 'E',
-      'templateUrl': '/static/resources/js/components/project/add-project.directive.html',
-      'controller': AddProjectController,
+      'templateUrl': '/static/resources/js/components/custom/add-custom.directive.html',
+      'controller': AddCustomController,
       'scope' : {
         'isOpen': '='
       },
@@ -102,6 +98,7 @@
     return directive;
 
     function link(scope, element, attrs, ctrl) {
+
       scope.form.$setPristine();
       scope.form.$setUntouched();
     }

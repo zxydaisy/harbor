@@ -3,7 +3,7 @@ package dao
 import (
 	"github.com/vmware/harbor/models"
 	"fmt"
-	"github.com/caicloud/fornax/pkg/log"
+	"github.com/vmware/harbor/utils/log"
 )
 
 
