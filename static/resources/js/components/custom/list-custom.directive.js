@@ -33,6 +33,7 @@
     vm.toggleInProgress = [];
 
     vm.retrieve = retrieve;
+    vm.tags = [];
     vm.deleteCustom = deleteCustom;
     vm.confirmToDelete = confirmToDelete;
     vm.showAddCustom = showAddCustom;
@@ -58,7 +59,7 @@
     });
 
     //添加客户成功之后，刷新列表
-    $scope.$on('addedSuccess', function(e, val) {
+    $scope.$on('addedCustomSuccess', function(e, val) {
       vm.retrieve();
     });
 
@@ -69,9 +70,9 @@
         .error(getCustomFailed);
     }
 
-    //根据根据配置初始化分页
     function getCustomComplete(data, status) {
       //获取客户列表
+      vm.customs = data || [];
     }
 
     function getCustomFailed(response) {
@@ -86,7 +87,7 @@
       }
     }
 
-    function confirmToDelete(customId, custom) {
+    function confirmToDelete(customId, name) {
       vm.selectedCustomId = customId;
 
       $scope.$emit('modalTitle', $filter('tr')('confirm_delete_user_title'));

@@ -48,20 +48,19 @@
     }
 
     function addCustomSuccess(data, status) {
-      $scope.$emit('addedSuccess', true);
+      //发送信息更新custom列表
+      $scope.$emit('addedCustomSuccess', true);
       vm.hasError = false;
       vm.errorMessage = '';
       vm.isOpen = false;
-      //成功之后更新页面
-      vm.refresh();
     }
 
     function addCustomFailed(data, status) {
       vm.hasError = true;
       vm.errorMessage = status;
       console.log('Failed to add tag:' + status);
-      if(status === 409 && vm0.tagName !== '') {
-        vm.errorMessage = 'tag_already_exist';
+      if(status === 409 && vm0.customName !== '') {
+        vm.errorMessage = 'custom_already_exist';
       }
     }
 
