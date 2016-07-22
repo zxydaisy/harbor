@@ -13,9 +13,9 @@ type CustomerController struct {
 }
 
 type CustomerReq struct {
-	Id int `json:"id"`
-	Name string `json:"name"`
-	Tag  string   `json:"tag"`
+	Id int 					`json:"id"`
+	Name string 		`json:"name"`
+	Tag  string   	`json:"tag"`
 }
 
 
