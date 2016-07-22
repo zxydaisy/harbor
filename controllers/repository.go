@@ -10,5 +10,6 @@ type RepositoryController struct {
 // Get renders repository page
 func (rc *RepositoryController) Get() {
 	rc.Data["HarborRegUrl"] = os.Getenv("HARBOR_REG_URL")
+	rc.Data["ConsoleWebUrl"] = os.Getenv("CONSOLE_WEB_URL")
 	rc.Forward("page_title_repository", "repository.htm")
 }
