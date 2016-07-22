@@ -42,21 +42,33 @@ func GetCustomerById(id int) (*models.Customer, error) {
 	return &p, nil
 }
 
-func GetProjectAllCustomer(projectName string) ([]models.Customer, error) {
+func GetProjectAllCustomer(projectId string) ([]models.Customer, error) {
 	o := GetOrmer()
-	//返回项目的客户列表
-	//select * from customer where tag in (select label from repo_label where repoName like 'library%' group by label)
-	sql := `select * from customer where tag in (select label from repo_label
-	 where repoName like ? group by label)`
 
 	var customer []models.Customer
+	if projectId == "" {
+		//返回客户列表
+		if _, err := o.Raw("select * from customer").QueryRows(&customer); err != nil {
+			return nil, err
+		}
+	}else{
+		p := models.Project{}
+		sql := `select * from project where project_id = ?`
+		if err := o.Raw(sql,projectId).QueryRow(&p); err != nil {
+			return nil, err
+		}
+		projectName := p.Name+"%"
 
-	if _, err := o.Raw(sql,projectName+"%").QueryRows(&customer); err != nil {
-		return nil, err
+		log.Infof("res: %+v", projectName)
+		//返回项目的客户列表
+		// select * from customer where tag in (select label from repo_label where repoName like 'library%' group by label)
+		sql = `select * from customer where tag in (select label from repo_label
+		 where repoName like ? group by label)`
+
+		if _, err := o.Raw(sql,projectName).QueryRows(&customer); err != nil {
+			return nil, err
+		}
 	}
-
-	log.Infof("projectName: %v", projectName)
-
 	return customer, nil
 }
 
