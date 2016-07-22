@@ -27,6 +27,9 @@
 
     vm.tags = [];
     vm.labelCount = {};
+    //跳转到部署应用界面
+    vm.consoleWebAppUrl = $('#ConsoleWebUrl').val() + '/application/add';
+    vm.harborRegUrl =  $('#HarborRegUrl').val() + '/';
     vm.retrieve = retrieve;
 
     $scope.$watch('vm.repoName', function(current, origin) {
@@ -41,7 +44,6 @@
         vm.retrieve();
       }
     });
-
 
     vm.deleteTag = deleteTag;
     vm.showDeleteLabel = showDeleteLabel;
@@ -111,8 +113,6 @@
     }
 
     function showAddLabel() {
-    //  $scope.$emit('repoName', e.repoName);
-    //  $scope.$emit('label', e.label);
       if(vm.isOpen){
         vm.isOpen = false;
       }else{
