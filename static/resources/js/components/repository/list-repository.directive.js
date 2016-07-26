@@ -60,10 +60,12 @@
    };
 
     vm.projectId = getParameterByName('project_id', $location.absUrl());
+    vm.customId = getParameterByName('custom_Id', $location.absUrl());
     vm.retrieve();
 
     $scope.$on('$locationChangeSuccess', function() {
       vm.projectId = getParameterByName('project_id', $location.absUrl());
+      vm.customId = getParameterByName('custom_Id', $location.absUrl());
       vm.filterInput = '';
       vm.retrieve();
     });
