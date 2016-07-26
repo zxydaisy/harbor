@@ -62,7 +62,7 @@ func GetProjectAllCustomer(projectId string) ([]models.Customer, error) {
 		log.Infof("res: %+v", projectName)
 		//返回项目的客户列表
 		// select * from customer where tag in (select label from repo_label where repoName like 'library%' group by label)
-		sql = `select * from customer where tag in (select label from repo_label
+		sql = `select * from customer where name in (select label from repo_label
 		 where repoName like ? group by label)`
 
 		if _, err := o.Raw(sql,projectName).QueryRows(&customer); err != nil {

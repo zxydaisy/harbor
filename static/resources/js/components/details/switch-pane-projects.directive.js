@@ -27,7 +27,7 @@
  
     $scope.$watch('vm.selectedProject', function(current, origin) {
       if(current){
-        vm.projectName = current.name;
+        vm.projectName = current.name_chinese;
         vm.selectedProject = current;
       }
     });
