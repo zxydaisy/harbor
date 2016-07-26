@@ -42,7 +42,6 @@
     $scope.$watch('vm.selectedProject', function(current, origin) {
       if(current) {
         vm.selectedId = current.project_id;
-        ListCustomService(vm.selectedId);
       }
     });
 
@@ -52,6 +51,8 @@
       vm.projectType = (vm.isPublic === 1) ? 'public_projects' : 'my_projects';
       vm.retrieve();
     });
+
+
 
     function getCustoms(projectId){
       //根据项目id获取对应的客户
