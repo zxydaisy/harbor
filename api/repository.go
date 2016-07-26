@@ -64,13 +64,13 @@ type repoReq struct {
 func (ra *RepositoryAPI) Get() {
 	//增加客户ID过滤镜像
 	var tag string = ""
-	customerId, err := ra.GetInt("cid")
+	customerId, err := ra.GetInt("custom_id")
 	log.Info("customerid:",customerId)
 
 	if customerId != 0 {
 		customer, err := dao.GetCustomerById(customerId)
 		if  err == nil {
-			tag = customer.Tag
+			tag = customer.Name
 		}
 	}
 
