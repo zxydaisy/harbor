@@ -39,36 +39,23 @@
       }
     });
 
+    $scope.$on('selectedCustomNull', function(e, val) {
+        vm.selectedCustom = null;
+    });
+
     function retrieve(){
       ListCustomService(vm.projectId)
         .success(getCustomComplete)
         .error(getCustomFailed);
     }
 
-    function selectItem(item) {
+    function selectItem(custom) {
       vm.selectedCustom = item;
-      $location.search('custom_id', vm.selectedCustom.id);
     }
 
     function getCustomComplete(data, status) {
       //获取客户列表
       vm.customs = data || [];
-
-      if(angular.isArray(vm.customs) && vm.customs.length > 0) {
-        vm.selectedCustom = vm.customs[0];
-      }else{
-        $window.location.href = '/project';
-      }
-
-      if(getParameterByName('custom_id', $location.absUrl())){
-        angular.forEach(vm.customs, function(value, index) {
-          if(value['custom_id'] === Number(getParameterByName('custom_id', $location.absUrl()))) {
-            vm.selectedCustom = value;
-          }
-        });
-      }
-
-      $location.search('custom_id', vm.selectedCustom.id);
     }
 
     function getCustomFailed(response) {

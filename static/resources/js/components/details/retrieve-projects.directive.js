@@ -117,6 +117,7 @@
 
     function selectItem(item) {
       vm.selectedProject = item;
+      $scope.$emit('selectedCustomNull', true);
       $location.search('project_id', vm.selectedProject.project_id);
     }
 
