@@ -20,7 +20,7 @@
     .module('harbor.details')
     .directive('nodeCustom', nodeCustom);
 
-  NodeCustomController.$inject = ['$scope', 'ListCustomService', ' $location', '$window', '$filter', 'trFilter', 'getParameterByName'];
+  NodeCustomController.$inject = ['$scope', 'ListCustomService', '$location', '$window', '$filter', 'trFilter', 'getParameterByName'];
 
   function NodeCustomController($scope, ListCustomService, $location, $window, $filter, trFilter, getParameterByName) {
     var vm = this;
